@@ -1,0 +1,23 @@
+{
+    "name": "finger/yaflib",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["php", "php7", "yaf"],
+    "homepage": "https://phpjieshuo.com",
+    "authors": [
+        {
+            "name": "fingerQin",
+            "email": "753814253@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0.0",
+        "phpoffice/phpspreadsheet": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "finger\\": "src/"
+        }
+    }
+}
