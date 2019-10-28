@@ -7,8 +7,8 @@
 
 namespace finger\Utils;
 
-use finger\YLog;
 use finger\Ip;
+use finger\Utils\YLog;
 
 class YCore
 {
