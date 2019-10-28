@@ -67,6 +67,29 @@ class YUrl
     }
 
     /**
+     * 创建一个管理后台的URL。
+     *
+     * @param  string  $controllerName  控制器名称。
+     * @param  string  $actionName      操作名称。
+     * @param  array   $params          参数。
+     * @return string
+     */
+    public static function createBackendUrl($controllerName = '', $actionName = '', array $params = [])
+    {
+        $domainName = self::getDomainName();
+        $domainName = trim($domainName, '/');
+        if (strlen($controllerName) == 0) {
+            return $domainName;
+        }
+        if (strlen($actionName) == 0) {
+            $controllerName = ltrim($controllerName, '/');
+            return "{$domainName}/{$controllerName}";
+        } else {
+            return self::createPageUrl($domainName, 'Index', $controllerName, $actionName, $params);
+        }
+    }
+
+    /**
      * 创建一个页面URL。
      *
      * @param  string  $domainName      域名。
