@@ -64,7 +64,7 @@ class YCore
      * @param  string|array   $errMsg              错误信息。
      * @param  string         $classNameAndMethod  出错位置执行的类与方法。当使用 try cacth 捕获异常时将捕获的异常信息传入。
      * @param  string         $args                出错位置传入方法的参数。当使用 try cacth 捕获异常时将捕获的异常信息传入。
-     * @throws \finger\ServiceException
+     * @throws \finger\Exception\ServiceException
      */
     public static function exception($errCode, $errMsg, $classNameAndMethod = '', $args = [])
     {
@@ -75,7 +75,7 @@ class YCore
             $classNameAndMethod = $result[1]['class'] . $result[1]['type'] . $result[1]['function'];
             $args               = $result[1]['args'];
         }
-        throw new \finger\ServiceException($errMsg, $errCode, $classNameAndMethod, $args);
+        throw new \finger\Exception\ServiceException($errMsg, $errCode, $classNameAndMethod, $args);
     }
 
     /**
