@@ -197,7 +197,7 @@ class Connection
      * @param  string  $dbOption     数据库配置项。断线重连时，以哪个数据库配置重连。
      * 
      * @return void
-     * @throws \finger\ServiceException
+     * @throws \finger\Exception\ServiceException
      */
     final public function ping($isReconnect = true, $dbOption = '')
     {
