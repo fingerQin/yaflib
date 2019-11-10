@@ -7,6 +7,7 @@
 
 namespace finger;
 
+use finger\Exception\FingerException;
 use finger\Utils\YCore;
 use finger\Utils\YCache;
 
@@ -36,7 +37,7 @@ class RedisMutexLock
     public static function lock($key, $timeout = 0, $lockSecond = 20, $sleep = 100000)
     {
         if (strlen($key) === 0) {
-            YCore::exception(STATUS_ERROR, '缓存KEY没有设置');
+            throw new FingerException('缓存KEY没有设置');
         }
         $start = self::getMicroTime();
         $redis = self::getRedis();
