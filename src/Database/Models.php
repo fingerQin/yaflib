@@ -8,7 +8,7 @@
 
 namespace finger\Database;
 
-use finger\Utils\YCore;
+use finger\Exception\FingerException;
 
 class Models
 {
@@ -188,7 +188,7 @@ class Models
         } else if (is_string($columns)) {
             $columnCondition = $columns;
         } else {
-            YCore::exception(STATUS_ERROR, 'SQL statement column is not formatted properly');
+            throw new FingerException('SQL statement column is not formatted properly');
         }
         $columnCondition = trim($columnCondition, ',');
 
@@ -260,7 +260,7 @@ class Models
         } else if (is_string($columns)) {
             $columnCondition = $columns;
         } else {
-            YCore::exception(STATUS_ERROR, 'SQL statement column is not formatted properly');
+            throw new FingerException('SQL statement column is not formatted properly');
         }
         $columnCondition = trim($columnCondition, ',');
 
@@ -296,7 +296,6 @@ class Models
         if ($isMaster) {
             $HintSqlPre = '/*FORCE_MASTER*/ ';
         }
-
         // [1] 参数判断。
         $this->checkTableName() ;
         // [2] where 条件生成。
@@ -331,7 +330,7 @@ class Models
     {
         $this->checkTableName();
         if (empty($data)) {
-            YCore::exception(STATUS_ERROR, "Insert the data parameter can't be empty", false);
+            throw new FingerException("Insert the data parameter can't be empty");
         }
         $this->checkInsertTime($data, 'insert');
         $columnCondition = '';
@@ -388,7 +387,7 @@ class Models
         $this->checkTableName();
         $this->checkWhere($where);
         if (empty($data)) {
-            YCore::exception(STATUS_ERROR, 'Update the data parameter can\'t be empty');
+            throw new FingerException('Update the data parameter can\'t be empty');
         }
         $this->checkInsertTime($data, 'update');
         // [2] SET 条件生成。
@@ -397,7 +396,7 @@ class Models
         foreach ($data as $columnName => $columnVal) {
             if (is_array($columnVal)) {
                 if (count($columnVal) != 2) {
-                    YCore::exception(STATUS_ERROR, 'The value of the field being updated is incorrect');
+                    throw new FingerException('The value of the field being updated is incorrect');
                 }
                 if (strtolower($columnVal[0]) == 'incr') { // 字段值自增。
                     $setCondition .= "`{$columnName}` = `{$columnName}` + :__c_{$columnName},";
@@ -477,11 +476,11 @@ class Models
     final public function insertAll(array $data)
     {
         if (empty($data)) {
-            YCore::exception(STATUS_ERROR, 'insertAll::Batch insert data cannot be empty');
+            throw new FingerException('insertAll::Batch insert data cannot be empty');
         }
         // [1] 取第一个数组的键作为字段。
         if (!is_array($data[0])) {
-            YCore::exception(STATUS_ERROR, 'insertAll:第一个数组元素不是数组类型');
+            throw new FingerException('insertAll:第一个数组元素不是数组类型');
         }
         $fileds = array_keys($data[0]);
         $sql    = 'INSERT INTO ' . $this->tableName . ' ( ';
@@ -565,20 +564,20 @@ class Models
         }
         foreach ($arrWhere as $field => $item) {
             if (!is_string($field)) {
-                YCore::exception(STATUS_ERROR, "The keys of the where clause for corresponding values ({$field}) is not a string type");
+                throw new FingerException("The keys of the where clause for corresponding values ({$field}) is not a string type");
             }
             if (is_string($item) || is_numeric($item)) {
                 $where .= " AND `{$field}` = :{$field} ";
                 $params[":{$field}"] = $item;
             } else if (is_array($item)) {
                 if (empty($item)) {
-                    YCore::exception(STATUS_ERROR, "The keys of the where clause for corresponding values ({$field}) is not a array type");
+                    throw new FingerException("The keys of the where clause for corresponding values ({$field}) is not a array type");
                 }
                 if (!isset($item[0])) {
-                    YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for operation symbols");
+                    throw new FingerException("The field {$field} is not set conditions for operation symbols");
                 }
                 if (!is_string($item[0]) && !is_numeric($item[0])) {
-                    YCore::exception(STATUS_ERROR, "The field {$field} must be a string type");
+                    throw new FingerException("The field {$field} must be a string type");
                 }
                 $ops = trim(strtolower($item[0]));
                 switch ($ops) {
@@ -591,10 +590,10 @@ class Models
                     case '<>'   :
                     case 'like' :
                         if (!isset($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
+                            throw new FingerException("The field {$field} is not set conditions for value");
                         }
                         if (!is_string($item[1]) && !is_numeric($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} must be a string type");
+                            throw new FingerException("The field {$field} must be a string type");
                         }
                         $where .= " AND `{$field}` {$ops} :{$field} ";
                         $params[":{$field}"] = $item[1];
@@ -602,10 +601,10 @@ class Models
                     case 'in' :
                     case 'not in' :
                         if (!isset($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
+                            throw new FingerException("The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} must be a array type");
+                            throw new FingerException("The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
                             continue;
@@ -620,26 +619,26 @@ class Models
                         break;
                     case 'between':
                         if (!isset($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
+                            throw new FingerException("The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            YCore::exception(STATUS_ERROR, "The field {$field} must be a array type");
+                            throw new FingerException("The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
-                            YCore::exception(STATUS_ERROR, "This field's({$field}) between scope values must be set");
+                            throw new FingerException("This field's({$field}) between scope values must be set");
                         }
                         if (!isset($item[1][0])) {
-                            YCore::exception(STATUS_ERROR, "The between left value of this field({$field}) must be set");
+                            throw new FingerException("The between left value of this field({$field}) must be set");
                         }
                         if (!isset($item[1][1])) {
-                            YCore::exception(STATUS_ERROR, "The between right value of this field({$field}) must be set");
+                            throw new FingerException("The between right value of this field({$field}) must be set");
                         }
                         $where .= " AND `{$field}` BETWEEN :{$field}_0 AND :{$field}_1 ";
                         $params[":{$field}_0"] = $item[1][0];
                         $params[":{$field}_1"] = $item[1][1];
                         break;
                     default :
-                        YCore::exception(STATUS_ERROR, "{$ops} operator does not exist");
+                        throw new FingerException("{$ops} operator does not exist");
                         break;
                 }
             }
@@ -710,7 +709,7 @@ class Models
     protected function checkTableName()
     {
         if (!is_string($this->tableName) || strlen($this->tableName) === 0) {
-            YCore::exception(STATUS_ERROR, 'The tableName parameters is wrong');
+            throw new FingerException('The tableName parameters is wrong');
         }
         return true;
     }
@@ -723,7 +722,7 @@ class Models
     protected function checkOrderBy($orderBy)
     {
         if (!is_string($orderBy)) {
-            YCore::exception(STATUS_ERROR, 'The orderBy parameters is wrong');
+            throw new FingerException('The orderBy parameters is wrong');
         }
         return true;
     }
@@ -736,7 +735,7 @@ class Models
     protected function checkWhere(array $where)
     {
         if (empty($where)) {
-            YCore::exception(STATUS_ERROR, 'The where parameters is wrong');
+            throw new FingerException('The where parameters is wrong');
         }
         return true;
     }
@@ -749,7 +748,7 @@ class Models
     protected function checkLimit($limit)
     {
         if (!is_numeric($limit)) {
-            YCore::exception(STATUS_ERROR, 'The limit parameter is wrong');
+            throw new FingerException('The limit parameter is wrong');
         }
         return true;
     }
@@ -762,7 +761,7 @@ class Models
     protected function checkGroupBy($groupBy)
     {
         if (!is_string($groupBy)) {
-            YCore::exception(STATUS_ERROR, 'The groupBy parameter is wrong');
+            throw new FingerException('The groupBy parameter is wrong');
         }
         return true;
     }
@@ -774,7 +773,7 @@ class Models
     protected function checkStatement()
     {
         if (empty($this->stmt)) {
-            YCore::exception(STATUS_ERROR, 'The PDO statement not instantiate');
+            throw new FingerException('The PDO statement not instantiate');
         }
         return true;
     }

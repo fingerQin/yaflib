@@ -7,6 +7,7 @@
 namespace finger;
 
 use finger\Utils\YCore;
+use finger\Exception\ValidatorException;
 
 class Validator 
 {
@@ -70,14 +71,14 @@ class Validator
     public static function valido(array $data, array $rules)
     {
         if (empty($data)) {
-            YCore::exception(STATUS_ERROR, 'The $data parameter can\'t be empty');
+            throw new ValidatorException('The $data parameter can\'t be empty');
         }
         if (empty($rules)) {
-            YCore::exception(STATUS_ERROR, 'The $rules parameter can\'t be empty');
+            throw new ValidatorException('The $rules parameter can\'t be empty');
         }
         foreach ($rules as $name => $rule) {
             if (!array_key_exists($name, $data)) {
-                YCore::exception(STATUS_ERROR, "The {$name} value does not exist");
+                throw new ValidatorException("The {$name} value does not exist");
             }
             $arr_rule = explode('|', $rule);
             if (count($arr_rule) === 1) {
@@ -120,7 +121,7 @@ class Validator
                         $classFuncName = "is_{$ruleName}"; // 当前调用的验证器名称。
                         if (!self::$classFuncName($valiValue)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
+                            throw new ValidatorException($errmsg);
                         }
                         break;
                     case 'alpha_between' :
@@ -128,14 +129,14 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Alpha_between validator must set the starting value');
+                            throw new ValidatorException('Alpha_between validator must set the starting value');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Alpha_between validator must set the cut-off value');
+                            throw new ValidatorException('Alpha_between validator must set the cut-off value');
                         }
                         if (!self::is_alpha_between($valiValue, $arrRuleItem[1], $arrRuleItem[2])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
+                            throw new ValidatorException($errmsg);
                         }
                         break;
                     case 'number_between' :
@@ -143,16 +144,16 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Number_between validator must set the minimum value');
+                            throw new ValidatorException('Number_between validator must set the minimum value');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Number_between validator must set the maximum value');
+                            throw new ValidatorException('Number_between validator must set the maximum value');
                         }
                         if (!self::is_number_between($valiValue, $arrRuleItem[1], $arrRuleItem[2])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             $errmsg = str_replace('%min%', $arrRuleItem[1], $errmsg);
                             $errmsg = str_replace('%max%', $arrRuleItem[2], $errmsg);
-                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
+                            throw new ValidatorException($errmsg);
                         }
                         break;
                     case 'len' :
@@ -160,19 +161,19 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator first parameter must be set');
+                            throw new ValidatorException('Len validator first parameter must be set');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator second parameter must be set');
+                            throw new ValidatorException('Len validator second parameter must be set');
                         }
                         if (!isset($arrRuleItem[3])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator third parameter must be set');
+                            throw new ValidatorException('Len validator third parameter must be set');
                         }
                         if (!self::is_len($valiValue, $arrRuleItem[1], $arrRuleItem[2], $arrRuleItem[3])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             $errmsg = str_replace('%min%', $arrRuleItem[1], $errmsg);
                             $errmsg = str_replace('%max%', $arrRuleItem[2], $errmsg);
-                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
+                            throw new ValidatorException($errmsg);
                         }
                         break;
                     case 'date' :
@@ -180,16 +181,16 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_SERVER_ERROR, 'Date validator first parameter must be set');
+                            throw new ValidatorException('Date validator first parameter must be set');
                         }
                         $format = $arrRuleItem[1] == 1 ? 'Y-m-d H:i:s' : 'Y-m-d';
                         if (!self::is_date($valiValue, $format)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
+                            throw new ValidatorException($errmsg);
                         }
                         break;
                     default :
-                        YCore::exception(STATUS_ERROR, "In the name `{$ruleName}` of the validator illegally");
+                        throw new ValidatorException("In the name `{$ruleName}` of the validator illegally");
                         break;
                 }
             }

@@ -9,6 +9,7 @@ namespace finger\Database;
 
 use finger\Utils\YCore;
 use finger\Utils\YLog;
+use finger\Exception\FingerException;
 
 class Connection
 {
@@ -205,7 +206,7 @@ class Connection
             $dbOption = $this->dbOption;
         }
         if (!$this->dbConnection) {
-            YCore::exception(STATUS_ERROR, 'Please connect to the database correctly!');
+            throw new FingerException('Please connect to the database correctly!');
         }
         try {
             $info = $this->dbConnection->getAttribute(\PDO::ATTR_SERVER_INFO);
@@ -248,7 +249,7 @@ class Connection
                         if ($isReconnect && !self::$transactionStatus) {
                             (new self)->reconnect($dbOption);
                         } else {
-                            YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
+                            throw new FingerException('The database server is disconnected!');
                         }
                     }
                 } catch (\PDOException $e) {
@@ -257,7 +258,7 @@ class Connection
                         YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
                         (new self)->reconnect($dbOption);
                     } else {
-                        YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
+                        throw new FingerException('The database server is disconnected!');
                     }
                 }
             }
@@ -315,7 +316,7 @@ class Connection
      */
     protected function openTransactionFailed()
     {
-        YCore::exception(STATUS_ERROR, 'Open transaction failure');
+        throw new FingerException('Open transaction failure');
     }
 
     /**
@@ -324,7 +325,7 @@ class Connection
      */
     protected function commitTransactionFailed()
     {
-        YCore::exception(STATUS_ERROR, 'Transaction commit failure');
+        throw new FingerException('Transaction commit failure');
     }
 
     /**
@@ -333,7 +334,7 @@ class Connection
      */
     protected function rollbackTransactionFailed()
     {
-        YCore::exception(STATUS_ERROR, 'Transaction rollback failed');
+        throw new FingerException('Transaction rollback failed');
     }
 
     /**

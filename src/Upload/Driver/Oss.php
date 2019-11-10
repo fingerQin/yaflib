@@ -8,8 +8,8 @@
 namespace finger\Upload\Driver;
 
 use finger\Utils\YCore;
-use finger\Alisdk\Oss\OssClient;
-use finger\Alisdk\Oss\Core\OssException;
+use OSS\OssClient;
+use OSS\Core\OssException;
 
 class Oss
 {

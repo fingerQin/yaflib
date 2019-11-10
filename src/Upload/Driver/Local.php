@@ -2,8 +2,8 @@
 
 namespace finger\Upload\Driver;
 
-class Local {
-
+class Local
+{
     /**
      * 上传文件根目录
      *
