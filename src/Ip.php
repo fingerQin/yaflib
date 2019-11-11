@@ -7,8 +7,6 @@
 
 namespace finger;
 
-use finger\Utils\YCore;
-
 class Ip
 {
     /**

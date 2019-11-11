@@ -6,6 +6,7 @@
 namespace finger;
 
 use finger\Utils\YCore;
+use finger\Exception\UploadException;
 
 class Upload
 {
@@ -115,15 +116,15 @@ class Upload
             $files = $_FILES;
         }
         if (empty($files)) {
-            YCore::exception(STATUS_ERROR, '没有上传任何文件');
+            throw new UploadException('没有上传任何文件');
         }
         /* 检测上传根目录 */
         if (!$this->uploader->checkRootPath($this->rootPath)) {
-            YCore::exception(STATUS_SERVER_ERROR, $this->uploader->getError());
+            throw new UploadException($this->uploader->getError());
         }
         /* 检查上传目录 */
         if (!$this->uploader->checkSavePath($this->savePath)) {
-            YCore::exception(STATUS_SERVER_ERROR, $this->uploader->getError());
+            throw new UploadException($this->uploader->getError());
         }
         /* 逐个检测并上传文件 */
         $info = [];
@@ -160,7 +161,7 @@ class Upload
             if (in_array($ext, ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'swf'])) {
                 $imginfo = getimagesize($file['tmp_name']);
                 if (empty($imginfo) || ($ext == 'gif' && empty($imginfo['bits']))) {
-                    YCore::exception(STATUS_ERROR, '非法图像文件');
+                    throw new UploadException('非法图像文件');
                 }
             }
             /* 保存文件 并记录保存成功的文件 */
@@ -175,7 +176,7 @@ class Upload
             finfo_close($finfo);
         }
         if (empty($info)) {
-            YCore::exception(STATUS_ERROR, '上传失败');
+            throw new UploadException('上传失败');
         }
         return $info;
     }
@@ -222,7 +223,7 @@ class Upload
         $class  = strpos($driver, '\\') ? $driver : 'finger\\Upload\\Driver\\' . ucfirst(strtolower($driver));
         $this->uploader = new $class($config);
         if (!$this->uploader) {
-            YCore::exception(STATUS_SERVER_ERROR, "不存在上传驱动：{$driver}");
+            throw new UploadException("不存在上传驱动：{$driver}");
         }
     }
 
@@ -240,24 +241,24 @@ class Upload
         }
         /* 无效上传 */
         if (empty($file['name'])) {
-            YCore::exception(STATUS_SERVER_ERROR, '未知上传错误');
+            throw new UploadException('未知上传错误');
         }
         /* 检查是否合法上传 */
         if (!is_uploaded_file($file['tmp_name'])) {
-            YCore::exception(STATUS_ERROR, '非法上传文件');
+            throw new UploadException('非法上传文件');
         }
         /* 检查文件大小 */
         if (!$this->checkSize($file['size'])) {
-            YCore::exception(STATUS_ERROR, '上传文件大小不符');
+            throw new UploadException('上传文件大小不符');
         }
         /* 检查文件Mime类型 */
         // TODO:FLASH上传的文件获取到的mime类型都为application/octet-stream
         if (!$this->checkMime($file['type'])) {
-            YCore::exception(STATUS_SERVER_ERROR, '上传文件MIME类型不允许');
+            throw new UploadException('上传文件MIME类型不允许');
         }
         /* 检查文件后缀 */
         if (!$this->checkExt($file['ext'])) {
-            YCore::exception(STATUS_ERROR, '上传文件后缀不允许');
+            throw new UploadException('上传文件后缀不允许');
         }
     }
 
@@ -270,25 +271,25 @@ class Upload
     {
         switch ($errorNo) {
             case 1:
-                YCore::exception(STATUS_SERVER_ERROR, '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值');
+                throw new UploadException('上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值');
                 break;
             case 2:
-                YCore::exception(STATUS_SERVER_ERROR, '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值');
+                throw new UploadException('上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值');
                 break;
             case 3:
-                YCore::exception(STATUS_SERVER_ERROR, '文件只有部分被上传');
+                throw new UploadException('文件只有部分被上传');
                 break;
             case 4:
-                YCore::exception(STATUS_SERVER_ERROR, '没有文件被上传');
+                throw new UploadException('没有文件被上传');
                 break;
             case 6:
-                YCore::exception(STATUS_SERVER_ERROR, '找不到临时文件夹');
+                throw new UploadException('找不到临时文件夹');
                 break;
             case 7:
-                YCore::exception(STATUS_SERVER_ERROR, '文件写入失败');
+                throw new UploadException('文件写入失败');
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, '未知上传错误');
+                throw new UploadException('未知上传错误');
         }
     }
 
@@ -338,7 +339,7 @@ class Upload
         } else {
             $savename = $this->getName($rule, $file['name']);
             if (empty($savename)) {
-                YCore::exception(STATUS_SERVER_ERROR, '文件命名规则错误');
+                throw new UploadException('文件命名规则错误');
             }
         }
         /* 文件保存后缀，支持强制更改文件后缀 */
@@ -355,10 +356,10 @@ class Upload
     {
         $subpath = '';
         $rule    = $this->subName;
-        if ($this->autoSub && ! empty($rule)) {
+        if ($this->autoSub && !empty($rule)) {
             $subpath = $this->getName($rule, $filename) . '/';
             if (! empty($subpath) && ! $this->uploader->mkdir($this->savePath . $subpath)) {
-                YCore::exception(STATUS_SERVER_ERROR, $this->uploader->getError());
+                throw new UploadException($this->uploader->getError());
             }
         }
         return $subpath;

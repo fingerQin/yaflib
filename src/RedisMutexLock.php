@@ -7,9 +7,9 @@
 
 namespace finger;
 
-use finger\Exception\FingerException;
 use finger\Utils\YCore;
 use finger\Utils\YCache;
+use finger\Exception\FingerException;
 
 class RedisMutexLock
 {

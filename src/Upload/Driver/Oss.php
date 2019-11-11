@@ -7,9 +7,9 @@
 
 namespace finger\Upload\Driver;
 
-use finger\Utils\YCore;
 use OSS\OssClient;
 use OSS\Core\OssException;
+use finger\Exception\UploadException;
 
 class Oss
 {
@@ -68,7 +68,7 @@ class Oss
                 false
             );
         } catch (OssException $e) {
-            YCore::exception(STATUS_ERROR, __FUNCTION__ . 'creating OssClient instance: FAILED'.$e->getMessage());
+            throw new UploadException(__FUNCTION__ . 'creating OssClient instance: FAILED'.$e->getMessage());
         }
         return $ossClient;
     }
@@ -115,7 +115,7 @@ class Oss
             $ossClient  = self::getOssClient();
             $bucketName = self::getBucketName();
             if (is_null($ossClient)) {
-                YCore::exception(STATUS_SERVER_ERROR, 'creating OssClient instance: FAILED');
+                throw new UploadException('creating OssClient instance: FAILED');
             }
             $ossClient->uploadFile($bucketName, $filename, $file['tmp_name']);
             return true;

@@ -30,7 +30,8 @@ class Local
      * @param string $rootpath 根目录
      * @return boolean true-检测通过，false-检测失败
      */
-    public function checkRootPath($rootpath) {
+    public function checkRootPath($rootpath)
+    {
         if (!(is_dir($rootpath) && is_writable($rootpath))) {
             $this->error = "上传根目录不存在！请尝试手动创建:{$rootpath}";
             return false;
@@ -45,7 +46,8 @@ class Local
      * @param string $savepath 上传目录
      * @return boolean 检测结果，true-通过，false-失败
      */
-    public function checkSavePath($savepath) {
+    public function checkSavePath($savepath)
+    {
         /* 检测并创建目录 */
         if (!$this->mkdir($savepath)) {
             return false;
@@ -67,7 +69,8 @@ class Local
      * @param boolean $replace 同名文件是否覆盖
      * @return boolean 保存状态，true-成功，false-失败
      */
-    public function save($file, $replace = true) {
+    public function save($file, $replace = true)
+    {
         $filename = $this->rootPath . $file['savepath'] . $file['savename'];
         /* 不覆盖同名文件 */
         if (!$replace && is_file($filename)) {
@@ -88,7 +91,8 @@ class Local
      * @param string $savepath 要创建的穆里
      * @return boolean 创建状态，true-成功，false-失败
      */
-    public function mkdir($savepath) {
+    public function mkdir($savepath)
+    {
         $dir = $this->rootPath . $savepath;
         if (is_dir($dir)) {
             return true;
@@ -106,8 +110,8 @@ class Local
      *
      * @return string 错误信息
      */
-    public function getError() {
+    public function getError()
+    {
         return $this->error;
     }
-
 }

@@ -10,6 +10,7 @@ namespace finger\cache\redis;
 
 use finger\Utils\YCore;
 use finger\Validator;
+use finger\Exception\CacheException;
 
 class Cache
 {
@@ -79,7 +80,7 @@ class Cache
     public function incr($cacheKey, $step = 1)
     {
         if (!Validator::is_integer($step) || $step <= 0) {
-            YCore::exception(STATUS_ERROR, 'Redis incr step error');
+            throw new CacheException('Redis incr step error');
         }
         return $this->client->incr($cacheKey, $step);
     }
@@ -93,7 +94,7 @@ class Cache
     public function decr($cacheKey, $step = 1)
     {
         if (!Validator::is_integer($step) || $step <= 0) {
-            YCore::exception(STATUS_ERROR, 'Redis decr step error');
+            throw new Cache('Redis decr step error');
         }
         return $this->client->decr($cacheKey, $step);
     }

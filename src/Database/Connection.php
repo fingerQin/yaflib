@@ -9,7 +9,7 @@ namespace finger\Database;
 
 use finger\Utils\YCore;
 use finger\Utils\YLog;
-use finger\Exception\FingerException;
+use finger\Exception\DbException;
 
 class Connection
 {
@@ -206,7 +206,7 @@ class Connection
             $dbOption = $this->dbOption;
         }
         if (!$this->dbConnection) {
-            throw new FingerException('Please connect to the database correctly!');
+            throw new DbException('Please connect to the database correctly!');
         }
         try {
             $info = $this->dbConnection->getAttribute(\PDO::ATTR_SERVER_INFO);
@@ -249,7 +249,7 @@ class Connection
                         if ($isReconnect && !self::$transactionStatus) {
                             (new self)->reconnect($dbOption);
                         } else {
-                            throw new FingerException('The database server is disconnected!');
+                            throw new DbException('The database server is disconnected!');
                         }
                     }
                 } catch (\PDOException $e) {
@@ -258,7 +258,7 @@ class Connection
                         YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
                         (new self)->reconnect($dbOption);
                     } else {
-                        throw new FingerException('The database server is disconnected!');
+                        throw new DbException('The database server is disconnected!');
                     }
                 }
             }
@@ -316,7 +316,7 @@ class Connection
      */
     protected function openTransactionFailed()
     {
-        throw new FingerException('Open transaction failure');
+        throw new DbException('Open transaction failure');
     }
 
     /**
@@ -325,7 +325,7 @@ class Connection
      */
     protected function commitTransactionFailed()
     {
-        throw new FingerException('Transaction commit failure');
+        throw new DbException('Transaction commit failure');
     }
 
     /**
@@ -334,7 +334,7 @@ class Connection
      */
     protected function rollbackTransactionFailed()
     {
-        throw new FingerException('Transaction rollback failed');
+        throw new DbException('Transaction rollback failed');
     }
 
     /**

@@ -8,7 +8,7 @@
 
 namespace finger\Database;
 
-use finger\Exception\FingerException;
+use finger\Exception\DbException;
 
 class Models
 {
@@ -42,7 +42,7 @@ class Models
 
     /**
      *
-     * @var 保存最后操作的PDOStatement对象。
+     * @var 保存最后操作的 PDOStatement 对象。
      */
     protected $stmt = null;
 
@@ -188,7 +188,7 @@ class Models
         } else if (is_string($columns)) {
             $columnCondition = $columns;
         } else {
-            throw new FingerException('SQL statement column is not formatted properly');
+            throw new DbException('SQL statement column is not formatted properly');
         }
         $columnCondition = trim($columnCondition, ',');
 
@@ -260,7 +260,7 @@ class Models
         } else if (is_string($columns)) {
             $columnCondition = $columns;
         } else {
-            throw new FingerException('SQL statement column is not formatted properly');
+            throw new DbException('SQL statement column is not formatted properly');
         }
         $columnCondition = trim($columnCondition, ',');
 
@@ -330,7 +330,7 @@ class Models
     {
         $this->checkTableName();
         if (empty($data)) {
-            throw new FingerException("Insert the data parameter can't be empty");
+            throw new DbException("Insert the data parameter can't be empty");
         }
         $this->checkInsertTime($data, 'insert');
         $columnCondition = '';
@@ -387,7 +387,7 @@ class Models
         $this->checkTableName();
         $this->checkWhere($where);
         if (empty($data)) {
-            throw new FingerException('Update the data parameter can\'t be empty');
+            throw new DbException('Update the data parameter can\'t be empty');
         }
         $this->checkInsertTime($data, 'update');
         // [2] SET 条件生成。
@@ -396,7 +396,7 @@ class Models
         foreach ($data as $columnName => $columnVal) {
             if (is_array($columnVal)) {
                 if (count($columnVal) != 2) {
-                    throw new FingerException('The value of the field being updated is incorrect');
+                    throw new DbException('The value of the field being updated is incorrect');
                 }
                 if (strtolower($columnVal[0]) == 'incr') { // 字段值自增。
                     $setCondition .= "`{$columnName}` = `{$columnName}` + :__c_{$columnName},";
@@ -476,11 +476,11 @@ class Models
     final public function insertAll(array $data)
     {
         if (empty($data)) {
-            throw new FingerException('insertAll::Batch insert data cannot be empty');
+            throw new DbException('insertAll::Batch insert data cannot be empty');
         }
         // [1] 取第一个数组的键作为字段。
         if (!is_array($data[0])) {
-            throw new FingerException('insertAll:第一个数组元素不是数组类型');
+            throw new DbException('insertAll:第一个数组元素不是数组类型');
         }
         $fileds = array_keys($data[0]);
         $sql    = 'INSERT INTO ' . $this->tableName . ' ( ';
@@ -564,20 +564,20 @@ class Models
         }
         foreach ($arrWhere as $field => $item) {
             if (!is_string($field)) {
-                throw new FingerException("The keys of the where clause for corresponding values ({$field}) is not a string type");
+                throw new DbException("The keys of the where clause for corresponding values ({$field}) is not a string type");
             }
             if (is_string($item) || is_numeric($item)) {
                 $where .= " AND `{$field}` = :{$field} ";
                 $params[":{$field}"] = $item;
             } else if (is_array($item)) {
                 if (empty($item)) {
-                    throw new FingerException("The keys of the where clause for corresponding values ({$field}) is not a array type");
+                    throw new DbException("The keys of the where clause for corresponding values ({$field}) is not a array type");
                 }
                 if (!isset($item[0])) {
-                    throw new FingerException("The field {$field} is not set conditions for operation symbols");
+                    throw new DbException("The field {$field} is not set conditions for operation symbols");
                 }
                 if (!is_string($item[0]) && !is_numeric($item[0])) {
-                    throw new FingerException("The field {$field} must be a string type");
+                    throw new DbException("The field {$field} must be a string type");
                 }
                 $ops = trim(strtolower($item[0]));
                 switch ($ops) {
@@ -590,10 +590,10 @@ class Models
                     case '<>'   :
                     case 'like' :
                         if (!isset($item[1])) {
-                            throw new FingerException("The field {$field} is not set conditions for value");
+                            throw new DbException("The field {$field} is not set conditions for value");
                         }
                         if (!is_string($item[1]) && !is_numeric($item[1])) {
-                            throw new FingerException("The field {$field} must be a string type");
+                            throw new DbException("The field {$field} must be a string type");
                         }
                         $where .= " AND `{$field}` {$ops} :{$field} ";
                         $params[":{$field}"] = $item[1];
@@ -601,10 +601,10 @@ class Models
                     case 'in' :
                     case 'not in' :
                         if (!isset($item[1])) {
-                            throw new FingerException("The field {$field} is not set conditions for value");
+                            throw new DbException("The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            throw new FingerException("The field {$field} must be a array type");
+                            throw new DbException("The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
                             continue;
@@ -619,26 +619,26 @@ class Models
                         break;
                     case 'between':
                         if (!isset($item[1])) {
-                            throw new FingerException("The field {$field} is not set conditions for value");
+                            throw new DbException("The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            throw new FingerException("The field {$field} must be a array type");
+                            throw new DbException("The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
-                            throw new FingerException("This field's({$field}) between scope values must be set");
+                            throw new DbException("This field's({$field}) between scope values must be set");
                         }
                         if (!isset($item[1][0])) {
-                            throw new FingerException("The between left value of this field({$field}) must be set");
+                            throw new DbException("The between left value of this field({$field}) must be set");
                         }
                         if (!isset($item[1][1])) {
-                            throw new FingerException("The between right value of this field({$field}) must be set");
+                            throw new DbException("The between right value of this field({$field}) must be set");
                         }
                         $where .= " AND `{$field}` BETWEEN :{$field}_0 AND :{$field}_1 ";
                         $params[":{$field}_0"] = $item[1][0];
                         $params[":{$field}_1"] = $item[1][1];
                         break;
                     default :
-                        throw new FingerException("{$ops} operator does not exist");
+                        throw new DbException("{$ops} operator does not exist");
                         break;
                 }
             }
@@ -709,7 +709,7 @@ class Models
     protected function checkTableName()
     {
         if (!is_string($this->tableName) || strlen($this->tableName) === 0) {
-            throw new FingerException('The tableName parameters is wrong');
+            throw new DbException('The tableName parameters is wrong');
         }
         return true;
     }
@@ -722,7 +722,7 @@ class Models
     protected function checkOrderBy($orderBy)
     {
         if (!is_string($orderBy)) {
-            throw new FingerException('The orderBy parameters is wrong');
+            throw new DbException('The orderBy parameters is wrong');
         }
         return true;
     }
@@ -735,7 +735,7 @@ class Models
     protected function checkWhere(array $where)
     {
         if (empty($where)) {
-            throw new FingerException('The where parameters is wrong');
+            throw new DbException('The where parameters is wrong');
         }
         return true;
     }
@@ -748,7 +748,7 @@ class Models
     protected function checkLimit($limit)
     {
         if (!is_numeric($limit)) {
-            throw new FingerException('The limit parameter is wrong');
+            throw new DbException('The limit parameter is wrong');
         }
         return true;
     }
@@ -761,7 +761,7 @@ class Models
     protected function checkGroupBy($groupBy)
     {
         if (!is_string($groupBy)) {
-            throw new FingerException('The groupBy parameter is wrong');
+            throw new DbException('The groupBy parameter is wrong');
         }
         return true;
     }
@@ -773,7 +773,7 @@ class Models
     protected function checkStatement()
     {
         if (empty($this->stmt)) {
-            throw new FingerException('The PDO statement not instantiate');
+            throw new DbException('The PDO statement not instantiate');
         }
         return true;
     }

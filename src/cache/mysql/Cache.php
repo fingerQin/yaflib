@@ -9,8 +9,8 @@
 
 namespace finger\cache\mysql;
 
-use finger\Utils\YCore;
 use finger\Database\Connection;
+use finger\Exception\CacheException;
 
 class Cache
 {
@@ -67,7 +67,7 @@ class Cache
      */
     public function incr($cacheKey)
     {
-        YCore::exception(STATUS_ERROR, 'The MySQL Cache plugin does not implement incr()');
+        throw new CacheException('The MySQL Cache plugin does not implement incr()');
     }
 
     /**

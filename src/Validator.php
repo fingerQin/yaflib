@@ -6,7 +6,6 @@
 
 namespace finger;
 
-use finger\Utils\YCore;
 use finger\Exception\ValidatorException;
 
 class Validator 

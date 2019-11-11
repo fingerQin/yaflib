@@ -9,12 +9,13 @@
  *   UNIQUE KEY `session_id` (`session_id`)
  * )ENGINE = MyISAM DEFAULT CHARSET=utf8 COMMENT 'session表';
  * --------------------------
- * -- 错误码：3005xxx
  * @author fingerQin
  * @date 2016-09-11
  */
 
 namespace finger\session\mysql;
+
+use finger\Exception\SessionException;
 
 class SessionHandler implements \SessionHandlerInterface
 {
@@ -53,115 +54,121 @@ class SessionHandler implements \SessionHandlerInterface
      * @param string $prefix
      * @throws \Exception
      */
-    public function __construct(&$pdo, $ttl = null, $prefix = 'sess_') {
+    public function __construct($pdo, $ttl = null, $prefix = 'sess_')
+    {
         $this->_ttl    = $ttl ?  : ini_get('session.gc_maxlifetime');
         $this->_client = $pdo;
         $this->_prefix = $prefix;
     }
 
     /**
-     * 关闭当前session。
+     * 关闭当前 session。
      *
      * @return bool
      */
-    public function close() {
+    public function close()
+    {
         return true;
     }
 
     /**
-     * 清除session。
-     * @param string $session_id
+     * 清除 session。
+     * @param  string  $sessionId
      * @return bool
      */
-    public function destroy($session_id) {
+    public function destroy($sessionId)
+    {
         $sql = 'DELETE FROM ms_session WHERE session_id = :session_id';
-        $session_id = $this->_prefix . $session_id;
+        $sessionId = $this->_prefix . $sessionId;
         $sth = $this->_client->prepare($sql);
-        $sth->bindParam(':session_id', $session_id, \PDO::PARAM_STR);
+        $sth->bindParam(':session_id', $sessionId, \PDO::PARAM_STR);
         $sth->execute();
         return true;
     }
 
     /**
      * session 垃圾回收。
-     * @param int $maxlifetime
+     * @param  int  $maxlifetime
      * @return bool
      */
-    public function gc($maxlifetime) {
+    public function gc($maxlifetime)
+    {
         $sql = 'DELETE FROM ms_session WHERE session_expire < :session_expire';
         $sth = $this->_client->prepare($sql);
         $sth->bindParam(':session_expire', $maxlifetime, \PDO::PARAM_INT);
         try {
             $sth->execute();
         } catch (\Exception $e) {
-            YCore::exception(STATUS_ERROR, "\finger\session\mysql\SessionHandler::gc method is wrong");
+            throw new SessionException("\finger\session\mysql\SessionHandler::gc method is wrong");
         }
         return true;
     }
 
     /**
      *
-     * @param string $save_path
-     * @param string $name
-     * @return boolean
+     * @param  string  $savePath
+     * @param  string  $name
+     * @return bool
      */
-    public function open($save_path, $name) {
+    public function open($savePath, $name)
+    {
         return true;
     }
 
     /**
-     * 读取session。
+     * 读取 session。
      *
-     * @param string $session_id
+     * @param  string  $sessionId
      * @return string
      */
-    public function read($session_id) {
-        $real_session_id = $this->_prefix . $session_id;
-        if (isset($this->_cache[$real_session_id])) {
-            return $this->_cache[$real_session_id];
+    public function read($sessionId)
+    {
+        $realSessionId = $this->_prefix . $sessionId;
+        if (isset($this->_cache[$realSessionId])) {
+            return $this->_cache[$realSessionId];
         }
-        $sql = 'SELECT * FROM ms_session WHERE session_id = :session_id';
+        $sql = 'SELECT * FROM ms_session WHERE session_id = :session_id LIMIT 1';
         $sth = $this->_client->prepare($sql);
-        $sth->bindParam(':session_id', $real_session_id, \PDO::PARAM_STR);
+        $sth->bindParam(':session_id', $realSessionId, \PDO::PARAM_STR);
         try {
             $sth->execute();
             $result = $sth->fetch(\PDO::FETCH_ASSOC);
             if ($result) {
                 if ($result['session_expire'] < time()) {
-                    $this->destroy($session_id);
-                    return ''; // session已经过期。
+                    $this->destroy($sessionId);
+                    return ''; // session 已经过期。
                 }
-                $sess_data = json_decode($result['session_data'], true);
-                $sess_data = $sess_data === null ? '' : $sess_data;
-                $this->_cache[$real_session_id] = $sess_data;
-                return $sess_data;
+                $sessData = json_decode($result['session_data'], true);
+                $sessData = $sessData === null ? '' : $sessData;
+                $this->_cache[$realSessionId] = $sessData;
+                return $sessData;
             } else {
                 return '';
             }
         } catch (\Exception $e) {
-            throw new \Exception('服务器繁忙', -1);
+            throw new SessionException("服务器繁忙");
         }
     }
 
     /**
      * 写session。
      *
-     * @param string $session_id
-     * @param string $session_data
+     * @param  string  $sessionId
+     * @param  string  $sessionData
      * @return bool
      */
-    public function write($session_id, $session_data) {
-        $real_session_id = $this->_prefix . $session_id;
-        $this->_cache[$real_session_id] = $session_data;
-        $session_data_json = json_encode($session_data);
+    public function write($sessionId, $sessionData)
+    {
+        $realSessionId = $this->_prefix . $sessionId;
+        $this->_cache[$realSessionId] = $sessionData;
+        $sessionDataJson = json_encode($sessionData);
         $ttl = $this->_ttl + time();
         $sql = 'REPLACE INTO ms_session(session_id, session_expire, session_data) VALUES(:session_id, :session_expire, :session_data)';
         $sth = $this->_client->prepare($sql);
-        $sth->bindParam(':session_id', $real_session_id, \PDO::PARAM_STR);
+        $sth->bindParam(':session_id', $realSessionId, \PDO::PARAM_STR);
         $sth->bindParam(':session_expire', $ttl, \PDO::PARAM_INT);
-        $sth->bindParam(':session_data', $session_data_json, \PDO::PARAM_STR);
+        $sth->bindParam(':session_data', $sessionDataJson, \PDO::PARAM_STR);
         $sth->execute();
         return true;
     }
-
 }
