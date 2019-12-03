@@ -3,6 +3,7 @@
 namespace finger\Image\Driver;
 
 use finger\Image;
+use finger\Exception\ImageException;
 
 class Gd
 {
@@ -39,13 +40,13 @@ class Gd
     {
         // 检测图像文件
         if (! is_file($imgname)) {
-            throw new \Exception('不存在的图像文件');
+            throw new ImageException('不存在的图像文件');
         }
         // 获取图像信息
         $info = getimagesize($imgname);
         // 检测图像合法性
         if (false === $info || (IMAGETYPE_GIF === $info[2] && empty($info['bits']))) {
-            throw new \Exception('非法图像文件');
+            throw new ImageException('非法图像文件');
         }
         // 设置图像信息
         $this->info = [
@@ -78,7 +79,7 @@ class Gd
     public function save($imgname, $type = null, $quality = 80, $interlace = true)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被保存的图像资源');
+            throw new ImageException('没有可以被保存的图像资源');
         }
         // 自动获取图像类型
         if (is_null($type)) {
@@ -107,7 +108,7 @@ class Gd
     public function width()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['width'];
     }
@@ -120,7 +121,7 @@ class Gd
     public function height()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['height'];
     }
@@ -133,7 +134,7 @@ class Gd
     public function type()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['type'];
     }
@@ -146,7 +147,7 @@ class Gd
     public function mime()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['mime'];
     }
@@ -159,7 +160,7 @@ class Gd
     public function size()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return [
             $this->info['width'],
@@ -180,7 +181,7 @@ class Gd
     public function crop($w, $h, $x = 0, $y = 0, $width = null, $height = null)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被裁剪的图像资源');
+            throw new ImageException('没有可以被裁剪的图像资源');
         }
         // 设置保存尺寸
         empty($width) && $width = $w;
@@ -211,7 +212,7 @@ class Gd
     public function thumb($width, $height, $type = Image::IMAGE_THUMB_SCALE)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被缩略的图像资源');
+            throw new ImageException('没有可以被缩略的图像资源');
         }
         // 原图宽度和高度
         $w = $this->info['width'];
@@ -292,7 +293,7 @@ class Gd
                 $x = $y = 0;
                 break;
             default :
-                throw new \Exception('不支持的缩略图裁剪类型');
+                throw new ImageException('不支持的缩略图裁剪类型');
         }
         /* 裁剪图像 */
         $this->crop($w, $h, $x, $y, $width, $height);
@@ -310,15 +311,15 @@ class Gd
     {
         // 资源检测
         if (empty($this->img)) {
-            throw new \Exception('没有可以被添加水印的图像资源');
+            throw new ImageException('没有可以被添加水印的图像资源');
         }
         if (! is_file($source)) {
-            throw new \Exception('水印图像不存在');
+            throw new ImageException('水印图像不存在');
         }
         // 获取水印图像信息
         $info = getimagesize($source);
         if (false === $info || (IMAGETYPE_GIF === $info[2] && empty($info['bits']))) {
-            throw new \Exception('非法水印文件');
+            throw new ImageException('非法水印文件');
         }
         // 创建水印图像资源
         $fun = 'imagecreatefrom' . image_type_to_extension($info[2], false);
@@ -376,7 +377,7 @@ class Gd
                 if (is_array($locate)) {
                     list($x, $y) = $locate;
                 } else {
-                    throw new \Exception('不支持的水印位置类型');
+                    throw new ImageException('不支持的水印位置类型');
                 }
         }
         do {
@@ -411,10 +412,10 @@ class Gd
     {
         // 资源检测
         if (empty($this->img)) {
-            throw new \Exception('没有可以被写入文字的图像资源');
+            throw new ImageException('没有可以被写入文字的图像资源');
         }
         if (! is_file($font)) {
-            throw new \Exception("不存在的字体文件：{$font}");
+            throw new ImageException("不存在的字体文件：{$font}");
         }
         // 获取文字信息
         $info = imagettfbbox($size, $angle, $font, $text);
@@ -476,7 +477,7 @@ class Gd
                     $x += $posx;
                     $y += $posy;
                 } else {
-                    throw new \Exception('不支持的文字位置类型');
+                    throw new ImageException('不支持的文字位置类型');
                 }
         }
 
@@ -497,7 +498,7 @@ class Gd
                 $color[3] = 0;
             }
         } elseif (! is_array($color)) {
-            throw new \Exception('错误的颜色值');
+            throw new ImageException('错误的颜色值');
         }
 
         do {

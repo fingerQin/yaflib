@@ -98,18 +98,18 @@ class Verify
     {
         $key = $this->authcode($this->seKey) . $id;
         // 验证码不能为空
-        $secode_json = \Yaf_Registry::get('session')->get($key);
+        $secode_json = Registry::get('session')->get($key);
         $secode = json_decode($secode_json, true);
         if (empty($code) || empty($secode)) {
             return false;
         }
         // session 过期
         if (time() - $secode['verify_time'] > $this->expire) {
-            \Yaf_Registry::get('session')->del($key);
+            Registry::get('session')->del($key);
             return false;
         }
         if ($this->authcode(strtoupper($code)) == $secode['verify_code']) {
-            $this->reset && \Yaf_Registry::get('session')->del($key);
+            $this->reset && Registry::get('session')->del($key);
             return true;
         }
         return false;
@@ -178,7 +178,7 @@ class Verify
         $secode = [];
         $secode['verify_code'] = $code; // 把校验码保存到 session
         $secode['verify_time'] = $_SERVER['REQUEST_TIME']; // 验证码创建时间
-        \Yaf_Registry::get('session')->set($key . $id, json_encode($secode));
+        Registry::get('session')->set($key . $id, json_encode($secode));
         header('Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate');
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');

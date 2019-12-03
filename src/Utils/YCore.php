@@ -8,6 +8,7 @@
 namespace finger\Utils;
 
 use finger\Ip;
+use finger\Registry;
 use finger\Utils\YLog;
 
 class YCore
@@ -104,8 +105,7 @@ class YCore
         $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         $clientIP = YCore::ip();
         $appDebug = self::appconfig('app.debug');
-        $request  = new \Yaf_Request_Http();
-        $isCli    = $request->isCli();
+        $isCli    = self::isCli();
 
         $logData = [
             'Type'       => 'set_error_handler',
@@ -124,7 +124,7 @@ class YCore
             header("Access-Control-Allow-Origin: *");
             header('Content-type: application/json');
             $data = [
-                'code' => STATUS_ERROR,
+                'code' => 500,
                 'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
             ];
             YLog::writeApiResponseLog($data);
@@ -169,8 +169,7 @@ class YCore
             $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
             $clientIP = YCore::ip();
             $appDebug = self::appconfig('app.debug');
-            $request  = new \Yaf_Request_Http();
-            $isCli    = $request->isCli();
+            $isCli    = self::isCli();
 
             $logData = [
                 'ErrorTime'  => date('Y-m-d H:i:s'),
@@ -190,7 +189,7 @@ class YCore
                 header("Access-Control-Allow-Origin: *");
                 header('Content-type: application/json');
                 $data = [
-                    'code' => STATUS_ERROR,
+                    'code' => 500,
                     'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
                 ];
                 YLog::writeApiResponseLog($data);
@@ -253,11 +252,11 @@ class YCore
         // [1]
         $envConfigObj = null;
         $envConfigKey = 'envConfig';
-        if (!\Yaf_Registry::has($envConfigKey)) {
+        if (! Registry::has($envConfigKey)) {
             $envPath = APP_PATH . DIRECTORY_SEPARATOR . '.env';
             if (file_exists($envPath)) {
                 $envConfigObj = new \Yaf_Config_Ini($envPath);
-                \Yaf_Registry::set($envConfigKey, $envConfigObj);
+                Registry::set($envConfigKey, $envConfigObj);
                 if (!is_null($envConfigObj[$key])) {
                     if (is_string($envConfigObj[$key])) {
                         return $envConfigObj[$key];
@@ -267,7 +266,7 @@ class YCore
                 }
             }
         } else {
-            $envConfigObj = \Yaf_Registry::get($envConfigKey);
+            $envConfigObj = Registry::get($envConfigKey);
             if (!is_null($envConfigObj[$key])) {
                 if (is_string($envConfigObj[$key])) {
                     return $envConfigObj[$key];
@@ -277,7 +276,7 @@ class YCore
             }
         }
         // [2]
-        $config = \Yaf_Registry::get('config');
+        $config = Registry::get('config');
         $cval   = $config->get($key);
         if (is_string($cval)) {
             return $cval;
@@ -368,21 +367,6 @@ class YCore
     }
 
     /**
-     * 获取身份证号对应的性别信息。
-     *
-     * @param  string  $idCardNo  身份证号。
-     * @return void
-     */
-    public static function getIdCardNoSex($idCardNo)
-    {
-        if (strlen($idCardNo) === 0) {
-            return User::SEX_UNKNOWN;
-        }
-        $sex = substr($idCardNo, 16, 1);
-        return (($sex%2) == 1) ? User::SEX_MALE : User::SEX_FEMAIL;
-    }
-
-    /**
      * 获取身份证号对应的生日信息。
      *
      * @param  string  $idCardNo  身份证号。
@@ -455,5 +439,15 @@ class YCore
     public static function getNullObject()
     {
         return (object)[];
+    }
+
+    /**
+     * 判断是否为 CLI 模式运行。
+     *
+     * @return boolean
+     */
+    public static function isCli()
+    {
+        return preg_match("/cli/i", PHP_SAPI) ? TRUE : FALSE;
     }
 }

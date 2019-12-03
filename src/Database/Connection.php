@@ -7,6 +7,7 @@
 
 namespace finger\Database;
 
+use finger\Registry;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
 use finger\Exception\DbException;
@@ -79,10 +80,10 @@ class Connection
     final public function changeDb($dbOption)
     {
         $registryName = "mysql_{$dbOption}";
-        if (\Yaf_Registry::has($registryName) === false) {
+        if (Registry::has($registryName) === false) {
             $this->connection($dbOption);
         }
-        $this->dbConnection = \Yaf_Registry::get($registryName);
+        $this->dbConnection = Registry::get($registryName);
     }
 
     /**
@@ -126,7 +127,7 @@ class Connection
         $dbh->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $dbh->query("SET NAMES {$charset}");
         self::$connectedIdent[$registryName] = $dbOption; // 之所以以连接标识做键,是避免多次连接导致持续的增加。
-        \Yaf_Registry::set($registryName, $dbh);
+        Registry::set($registryName, $dbh);
     }
 
     /**
@@ -164,10 +165,10 @@ class Connection
         // [2] 根据选项关闭数据库连接。
         foreach($dbOptions as $dbOption) {
             $registryName = "mysql_{$dbOption}";
-            if (\Yaf_Registry::has($registryName) === true) {
-                $dbh = \Yaf_Registry::get($registryName);
+            if (Registry::has($registryName) === true) {
+                $dbh = Registry::get($registryName);
                 $dbh = null;
-                \Yaf_Registry::set($registryName, null);
+                Registry::set($registryName, null);
             }
         }
     }
@@ -186,7 +187,7 @@ class Connection
         }
         $registryName = "mysql_{$dbOption}";
         $this->connection($dbOption);
-        $this->dbConnection = \Yaf_Registry::get($registryName);
+        $this->dbConnection = Registry::get($registryName);
     }
 
     /**
@@ -241,8 +242,8 @@ class Connection
     {
         foreach (self::$connectedIdent as $dbOption) {
             $registryName = "mysql_{$dbOption}";
-            if (\Yaf_Registry::has($registryName) === true) {
-                $dbh = \Yaf_Registry::get($registryName);
+            if (Registry::has($registryName) === true) {
+                $dbh = Registry::get($registryName);
                 try {
                     $info = $dbh->getAttribute(\PDO::ATTR_SERVER_INFO);
                     if (is_null($info)) {

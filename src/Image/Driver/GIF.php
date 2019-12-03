@@ -2,6 +2,8 @@
 
 namespace finger\Image\Driver;
 
+use finger\Exception\ImageException;
+
 class GIF
 {
     /**
@@ -35,8 +37,8 @@ class GIF
                 $de = new GIFDecoder($src);
                 $this->frames = $de->GIFGetFrames();
                 $this->delays = $de->GIFGetDelays();
-            } catch ( \Exception $e ) {
-                throw new \Exception('解码GIF图片出错');
+            } catch (\Exception $e) {
+                throw new ImageException('解码GIF图片出错');
             }
         }
     }

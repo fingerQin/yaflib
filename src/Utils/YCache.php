@@ -7,6 +7,8 @@
 
 namespace finger\Utils;
 
+use finger\Registry;
+
 class YCache
 {
     /**
@@ -19,12 +21,12 @@ class YCache
     private static function getInstace($redisOption = 'default')
     {
         $requestKey = "__system__cache__{$redisOption}";
-        $ok = \Yaf_Registry::has($requestKey);
+        $ok = Registry::has($requestKey);
         if ($ok) {
-            return \Yaf_Registry::get($requestKey);
+            return Registry::get($requestKey);
         } else {
             $systemCache = new \finger\cache\redis\Cache($redisOption);
-            \Yaf_Registry::set($requestKey, $systemCache);
+            Registry::set($requestKey, $systemCache);
             return $systemCache;
         }
     }

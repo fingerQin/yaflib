@@ -8,8 +8,9 @@
 
 namespace finger\cache\redis;
 
-use finger\Utils\YCore;
+use finger\Registry;
 use finger\Validator;
+use finger\Utils\YCore;
 use finger\Exception\CacheException;
 
 class Cache
@@ -30,13 +31,13 @@ class Cache
     public function __construct($redisOption = 'default')
     {
         $clientName = "finger_cache_redis_{$redisOption}";
-        if (\Yaf_Registry::has($clientName)) {
-            $this->client = \Yaf_Registry::get($clientName);
+        if (Registry::has($clientName)) {
+            $this->client = Registry::get($clientName);
             $redisIndex   = YCore::appconfig("redis.{$redisOption}.index");
             $this->client->select($redisIndex); // 必须显示切换到指定的 Redis 库。避免使用过程中被其他程序切换未还原。
         } else {
             $this->client = $this->connect($redisOption);
-            \Yaf_Registry::set($clientName, $this->client);
+            Registry::set($clientName, $this->client);
         }
     }
 

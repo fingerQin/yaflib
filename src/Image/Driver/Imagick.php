@@ -3,6 +3,7 @@
 namespace finger\Image\Driver;
 
 use finger\Image;
+use finger\Exception\ImageException;
 
 class Imagick
 {
@@ -39,7 +40,7 @@ class Imagick
     {
         // 检测图像文件
         if (! is_file($imgname)) {
-            throw new \Exception('不存在的图像文件');
+            throw new ImageException('不存在的图像文件');
         }
         // 销毁已存在的图像
         empty($this->img) || $this->img->destroy();
@@ -65,7 +66,7 @@ class Imagick
     public function save($imgname, $type = null, $quality = 80, $interlace = true)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被保存的图像资源');
+            throw new ImageException('没有可以被保存的图像资源');
         }
 
         // 设置图片类型
@@ -104,7 +105,7 @@ class Imagick
     public function width()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['width'];
     }
@@ -117,7 +118,7 @@ class Imagick
     public function height()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['height'];
     }
@@ -130,7 +131,7 @@ class Imagick
     public function type()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['type'];
     }
@@ -143,7 +144,7 @@ class Imagick
     public function mime()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return $this->info['mime'];
     }
@@ -156,7 +157,7 @@ class Imagick
     public function size()
     {
         if (empty($this->img)) {
-            throw new \Exception('没有指定图像资源');
+            throw new ImageException('没有指定图像资源');
         }
         return [
             $this->info['width'],
@@ -177,7 +178,7 @@ class Imagick
     public function crop($w, $h, $x = 0, $y = 0, $width = null, $height = null)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被裁剪的图像资源');
+            throw new ImageException('没有可以被裁剪的图像资源');
         }
 
         // 设置保存尺寸
@@ -234,7 +235,7 @@ class Imagick
     public function thumb($width, $height, $type = Image::IMAGE_THUMB_SCALE)
     {
         if (empty($this->img)) {
-            throw new \Exception('没有可以被缩略的图像资源');
+            throw new ImageException('没有可以被缩略的图像资源');
         }
 
         // 原图宽度和高度
@@ -353,7 +354,7 @@ class Imagick
                 break;
 
             default :
-                throw new \Exception('不支持的缩略图裁剪类型');
+                throw new ImageException('不支持的缩略图裁剪类型');
         }
 
         /* 裁剪图像 */
@@ -386,10 +387,10 @@ class Imagick
     {
         // 资源检测
         if (empty($this->img)) {
-            throw new \Exception('没有可以被添加水印的图像资源');
+            throw new ImageException('没有可以被添加水印的图像资源');
         }
         if (! is_file($source)) {
-            throw new \Exception('水印图像不存在');
+            throw new ImageException('水印图像不存在');
         }
 
         // 创建水印图像资源
@@ -459,7 +460,7 @@ class Imagick
                 if (is_array($locate)) {
                     list($x, $y) = $locate;
                 } else {
-                    throw new \Exception('不支持的水印位置类型');
+                    throw new ImageException('不支持的水印位置类型');
                 }
         }
 
@@ -504,10 +505,10 @@ class Imagick
     {
         // 资源检测
         if (empty($this->img)) {
-            throw new \Exception('没有可以被写入文字的图像资源');
+            throw new ImageException('没有可以被写入文字的图像资源');
         }
         if (! is_file($font)) {
-            throw new \Exception("不存在的字体文件：{$font}");
+            throw new ImageException("不存在的字体文件：{$font}");
         }
 
         // 获取颜色和透明度
@@ -518,7 +519,7 @@ class Imagick
             }
             $color = '#' . implode('', $color);
         } elseif (! is_string($color) || 0 !== strpos($color, '#')) {
-            throw new \Exception('错误的颜色值');
+            throw new ImageException('错误的颜色值');
         }
         $col = substr($color, 0, 7);
         $alp = strlen($color) == 9 ? substr($color, - 2) : 0;
@@ -598,7 +599,7 @@ class Imagick
                     $x += $posx;
                     $y += $posy;
                 } else {
-                    throw new \Exception('不支持的文字位置类型');
+                    throw new ImageException('不支持的文字位置类型');
                 }
         }
 

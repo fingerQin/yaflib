@@ -68,8 +68,8 @@ class Upload
     /**
      * 使用 $this->name 获取配置
      *
-     * @param  string $name 配置名称
-     * @return  mixed 配置值
+     * @param  string  $name  配置名称
+     * @return  mixed  配置值
      */
     public function __get($name)
     {
@@ -96,7 +96,7 @@ class Upload
     /**
      * 上传单个文件
      *
-     * @param  array $file 文件数组
+     * @param  array  $file  文件数组
      * @return array 上传成功后的文件信息
      */
     public function uploadOne($file)
@@ -184,7 +184,7 @@ class Upload
     /**
      * 转换上传文件数组变量为正确的方式
      *
-     * @param  array $files 上传的文件变量
+     * @param  array  $files  上传的文件变量
      * @return array
      */
     private function dealFiles($files)
@@ -213,8 +213,8 @@ class Upload
     /**
      * 设置上传驱动
      *
-     * @param string $driver  驱动名称
-     * @param array  $config  驱动配置
+     * @param  string  $driver  驱动名称
+     * @param  array   $config  驱动配置
      */
     private function setDriver($driver = null, $config = null)
     {
@@ -230,7 +230,7 @@ class Upload
     /**
      * 检查上传的文件
      *
-     * @param  array $file 文件信息
+     * @param  array  $file  文件信息
      * @return void
      */
     private function check($file)
@@ -265,7 +265,7 @@ class Upload
     /**
      * 获取错误代码信息
      *
-     * @param string $errorNo 错误号
+     * @param  string  $errorNo  错误号
      */
     private function error($errorNo)
     {
@@ -296,7 +296,7 @@ class Upload
     /**
      * 检查文件大小是否合法
      *
-     * @param integer $size 数据
+     * @param  integer  $size  数据
      */
     private function checkSize($size)
     {
@@ -306,7 +306,7 @@ class Upload
     /**
      * 检查上传的文件MIME类型是否合法
      *
-     * @param string $mime 数据
+     * @param  string  $mime  数据
      */
     private function checkMime($mime)
     {
@@ -316,7 +316,7 @@ class Upload
     /**
      * 检查上传的文件后缀是否合法
      *
-     * @param string $ext 后缀
+     * @param  string  $ext  后缀
      */
     private function checkExt($ext)
     {
@@ -350,7 +350,7 @@ class Upload
     /**
      * 获取子目录的名称
      *
-     * @param array $file 上传的文件信息
+     * @param  array  $file  上传的文件信息
      */
     private function getSubPath($filename)
     {
@@ -368,9 +368,9 @@ class Upload
     /**
      * 根据指定的规则获取文件或目录名称
      *
-     * @param  array  $rule     规则
-     * @param  string $filename 原文件名
-     * @return string 文件或目录名称
+     * @param   array   $rule      规则
+     * @param   string  $filename  原文件名
+     * @return  string  文件或目录名称
      */
     private function getName($rule, $filename)
     {

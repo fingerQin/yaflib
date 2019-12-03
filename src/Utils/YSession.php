@@ -7,6 +7,9 @@
 
 namespace finger\Utils;
 
+use finger\Registry;
+use finger\Exception\FingerException;
+
 class YSession
 {
     /**
@@ -20,7 +23,7 @@ class YSession
     public static function set($key, $value)
     {
         self::isOpenSession();
-        return \Yaf_Registry::get('session')->set($key, $value);
+        return Registry::get('session')->set($key, $value);
     }
 
     /**
@@ -33,7 +36,7 @@ class YSession
     public static function get($key)
     {
         self::isOpenSession();
-        return \Yaf_Registry::get('session')->get($key);
+        return Registry::get('session')->get($key);
     }
 
     /**
@@ -45,7 +48,7 @@ class YSession
     public static function delete($key)
     {
         self::isOpenSession();
-        return \Yaf_Registry::get('session')->del($key);
+        return Registry::get('session')->del($key);
     }
 
     /**
@@ -68,7 +71,7 @@ class YSession
     private static function isOpenSession()
     {
         if (!YCore::appconfig('session.status')) {
-            YCore::exception(STATUS_ERROR, 'Please open the session switch : session.status');
+            throw new FingerException('Please open the session switch : session.status');
         }
     }
 }

@@ -9,6 +9,7 @@
 
 namespace finger\cache\mysql;
 
+use finger\Registry;
 use finger\Database\Connection;
 use finger\Exception\CacheException;
 
@@ -23,11 +24,11 @@ class Cache
     public function __construct()
     {
         $clientName = 'finger_cache_mysql';
-        if (\Yaf_Registry::has($clientName)) {
-            $this->client = \Yaf_Registry::get($clientName);
+        if (Registry::has($clientName)) {
+            $this->client = Registry::get($clientName);
         } else {
             $this->client = $this->connect();
-            \Yaf_Registry::set($clientName, $this->client);
+            Registry::set($clientName, $this->client);
         }
     }
 

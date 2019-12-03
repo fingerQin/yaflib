@@ -118,7 +118,7 @@ class Validator
                             continue;
                         }
                         $classFuncName = "is_{$ruleName}"; // 当前调用的验证器名称。
-                        if (!self::$classFuncName($valiValue)) {
+                        if (!self::{$classFuncName}($valiValue)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             throw new ValidatorException($errmsg);
                         }
@@ -311,7 +311,7 @@ class Validator
     /**
      * 验证是否为中文。
      *
-     * @param  string $char
+     * @param  string  $char
      * @return bool
      */
     public static function is_chinese($char)
@@ -342,7 +342,7 @@ class Validator
      * 将加法和加上校验位能被 10 整除。
      * ---------------------
      * 
-     * @param  string $bankCardNo 银行卡号。
+     * @param  string  $bankCardNo  银行卡号。
      * @return bool
      */
     public static function is_bankcard($bankCardNo)

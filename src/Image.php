@@ -6,6 +6,8 @@
 
 namespace finger;
 
+use finger\Exception\ImageException;
+
 class Image
 {
     /* 驱动相关常量定义 */
@@ -71,9 +73,8 @@ class Image
                 $class = 'Imagick';
                 break;
             default :
-                YCore::exception(STATUS_ERROR, '不支持的图片处理库类型');
+                throw new ImageException('不支持的图片处理库类型');
         }
-
         /* 引入处理库，实例化图片处理对象 */
         $class = "finger\\Image\\Driver\\{$class}";
         $this->img = new $class($imgname);
