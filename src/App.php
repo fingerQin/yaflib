@@ -218,7 +218,7 @@ class App
             $cfgValue = null; // 临时存储每一级的配置。
             for ($i = 0; $i < $cfgLength; $i++) {
                 $cfgName = $cfgNameArr[$i]; // 当前配置项名称。
-                if ($i == $cfgLength) { // 循环到最后一个配置项的时候直接判断并返回其值。
+                if ($i == ($cfgLength-1)) { // 循环到最后一个配置项的时候直接判断并返回其值。
                     return $cfgValue[$cfgName] ?? NULL;
                 } else {
                     if (!is_null($cfgValue)) { // 如果这个值有值，代表上一级的配置是有值的。
