@@ -8,6 +8,8 @@
 namespace finger\Utils;
 
 use finger\Registry;
+use finger\cache\redis\Cache;
+use finger\Exception\CacheException;
 
 class YCache
 {
@@ -25,7 +27,7 @@ class YCache
         if ($ok) {
             return Registry::get($requestKey);
         } else {
-            $systemCache = new \finger\cache\redis\Cache($redisOption);
+            $systemCache = new Cache($redisOption);
             Registry::set($requestKey, $systemCache);
             return $systemCache;
         }
@@ -58,7 +60,7 @@ class YCache
     {
         $ret = (self::getInstace())->set($key, $value, $time);
         if ($ret != true) {
-            YCore::exception(STATUS_ERROR, 'Redis set method call failed');
+            throw new CacheException('Redis set method call failed');
         }
     }
 
@@ -121,7 +123,7 @@ class YCache
         $pong  = $redis->ping();
         if ($pong != '+PONG') {
             YLog::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
-            YCore::exception(STATUS_ERROR, 'Redis ping failure!');
+            throw new CacheException('Redis ping failure!');
         }
     }
 }

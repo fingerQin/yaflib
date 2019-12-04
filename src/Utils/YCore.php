@@ -7,8 +7,8 @@
 
 namespace finger\Utils;
 
+use finger\App;
 use finger\Ip;
-use finger\Registry;
 use finger\Utils\YLog;
 
 class YCore
@@ -239,52 +239,15 @@ class YCore
     }
 
     /**
-     * 读取配置文件(config.ini)。
+     * 读取配置文件。
      * 
-     * -- 先读取 .evn 文件，不存在，再读 config.ini 文件。
-     *
      * @param  string  $key  配置名。
      * @param  string  $val  当值不存在返回此值。
      * @return mixed
      */
     public static function appconfig($key, $val = null)
     {
-        // [1]
-        $envConfigObj = null;
-        $envConfigKey = 'envConfig';
-        if (! Registry::has($envConfigKey)) {
-            $envPath = APP_PATH . DIRECTORY_SEPARATOR . '.env';
-            if (file_exists($envPath)) {
-                $envConfigObj = new \Yaf_Config_Ini($envPath);
-                Registry::set($envConfigKey, $envConfigObj);
-                if (!is_null($envConfigObj[$key])) {
-                    if (is_string($envConfigObj[$key])) {
-                        return $envConfigObj[$key];
-                    } else {
-                        return $envConfigObj[$key]->toArray();
-                    }
-                }
-            }
-        } else {
-            $envConfigObj = Registry::get($envConfigKey);
-            if (!is_null($envConfigObj[$key])) {
-                if (is_string($envConfigObj[$key])) {
-                    return $envConfigObj[$key];
-                } else {
-                    return $envConfigObj[$key]->toArray();
-                }
-            }
-        }
-        // [2]
-        $config = Registry::get('config');
-        $cval   = $config->get($key);
-        if (is_string($cval)) {
-            return $cval;
-        } else if (is_null($cval) === false) {
-            return $cval->toArray();
-        } else {
-            return $val;
-        }
+        return App::getConfig($key, $val);
     }
 
     /**

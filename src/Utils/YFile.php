@@ -27,14 +27,12 @@ class YFile
      * @param  string  $filename  文件名称
      * @return void
      */
-    public static function file_down($filepath, $filename = '')
+    public static function fileDown($filepath, $filename = '')
     {
         if (!$filename) {
             $filename = basename($filepath);
         }
-        if (self::is_ie()) {
-            $filename = rawurlencode($filename);
-        }
+        // $filename = rawurlencode($filename);
         $filetype = self::fileext($filename);
         $filesize = sprintf("%u", filesize($filepath));
         if (ob_get_length() !== false) {

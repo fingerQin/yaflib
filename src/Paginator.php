@@ -44,7 +44,7 @@ class Paginator
     public function __construct($totalRows, $listRows = 20, $parameter = [])
     {
         /* 基础设置 */
-        $this->p         = YCore::appconfig('pager');
+        $this->p         = App::getConfig('pager', 'page');
         $this->totalRows = $totalRows; // 设置总记录数
         $this->listRows  = $listRows; // 设置每页显示行数
         $this->parameter = empty($parameter) ? $_GET : $parameter;

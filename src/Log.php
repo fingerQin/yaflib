@@ -9,6 +9,8 @@
 
 namespace finger;
 
+use finger\Utils\YDir;
+
 class Log
 {
     /**
@@ -86,7 +88,7 @@ class Log
             if (isset($openedFileHandle[$key])) { // 已打开了文件，则直接写入。
                 fwrite($openedFileHandle[$key], $logObj['logPath']);
             } else {
-                \finger\Utils\YDir::create(dirname($logObj['logPath']));
+                YDir::create(dirname($logObj['logPath']));
                 $handle = fopen($logObj['logPath'], 'a');
                 $openedFileHandle[$key] = $handle;
                 fwrite($handle, $logObj['log']);

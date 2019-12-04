@@ -7,6 +7,8 @@
 
 namespace finger\Utils;
 
+use finger\App;
+
 class YLog
 {
     /**
@@ -74,11 +76,11 @@ class YLog
         $logfile = date('Ymd', $time);
         if (strlen($logDir) > 0 && strlen($logFilename) > 0) {
             $logDir   = trim($logDir, '/');
-            $logPath  = APP_PATH . '/logs/' . $logDir;
+            $logPath  = App::getRootPath() . '/logs/' . $logDir;
             \finger\Utils\YDir::create($logPath);
             $logPath .= "/{$logFilename}-{$logfile}.log";
         } else {
-            $logPath  = APP_PATH . '/logs/errors/';
+            $logPath  = App::getRootPath() . '/logs/errors/';
             \finger\Utils\YDir::create($logPath);
             $logPath  = $logPath . $logfile . '.log';
         }

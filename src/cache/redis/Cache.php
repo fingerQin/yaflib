@@ -8,9 +8,9 @@
 
 namespace finger\cache\redis;
 
+use finger\App;
 use finger\Registry;
 use finger\Validator;
-use finger\Utils\YCore;
 use finger\Exception\CacheException;
 
 class Cache
@@ -22,6 +22,13 @@ class Cache
     protected $client = null;
 
     /**
+     * Redist 配置。
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
      * 构造方法。
      *
      * @param string $redisOption Reids 配置项名称。
@@ -30,10 +37,17 @@ class Cache
      */
     public function __construct($redisOption = 'default')
     {
+        // [1] 取配置。
+        $config = App::getRedisConfig();
+        if (empty($config)) {
+            throw new CacheException('The redis cache configuration is not set');
+        }
+        $this->config = $config;
+        // [2] 连接。
         $clientName = "finger_cache_redis_{$redisOption}";
         if (Registry::has($clientName)) {
+            $redisIndex = $config[$redisOption]['index'] ?? 1; // 如果未设置默认为1。
             $this->client = Registry::get($clientName);
-            $redisIndex   = YCore::appconfig("redis.{$redisOption}.index");
             $this->client->select($redisIndex); // 必须显示切换到指定的 Redis 库。避免使用过程中被其他程序切换未还原。
         } else {
             $this->client = $this->connect($redisOption);
@@ -60,7 +74,10 @@ class Cache
      */
     protected function connect($redisOption)
     {
-        $config     = YCore::appconfig("redis.{$redisOption}");
+        $config = $this->config[$redisOption] ?? [];
+        if (empty($config)) {
+            throw new CacheException("Redis 缓存配置:{$redisOption} 未设置");
+        }
         $redisHost  = $config['host'];
         $redisPort  = $config['port'];
         $redisAuth  = $config['auth'];
@@ -95,7 +112,7 @@ class Cache
     public function decr($cacheKey, $step = 1)
     {
         if (!Validator::is_integer($step) || $step <= 0) {
-            throw new Cache('Redis decr step error');
+            throw new CacheException('Redis decr step error');
         }
         return $this->client->decr($cacheKey, $step);
     }

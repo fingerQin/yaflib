@@ -19,14 +19,14 @@ class Db
     /**
      * 数据库连接。
      *
-     * @var [type]
+     * @var \finger\Database\Connection
      */
     protected $dbConnection = null;
 
     /**
      * PDO 连接。
      *
-     * @var [type]
+     * @var \PDO
      */
     protected $PDO = null;
 
@@ -35,7 +35,7 @@ class Db
      */
     private function __construct($dbOption = 'default')
     {
-        $this->dbConnection = new \finger\Database\Connection($dbOption);
+        $this->dbConnection = new Connection($dbOption);
         $this->PDO = $this->dbConnection->getDbClient();
     }
 

@@ -5,7 +5,6 @@
 
 namespace finger;
 
-use finger\Utils\YCore;
 use finger\Exception\UploadException;
 
 class Upload
@@ -218,8 +217,8 @@ class Upload
      */
     private function setDriver($driver = null, $config = null)
     {
-        $driver = $driver ?  : ($this->driver ?  : YCore::appconfig('upload.driver'));
-        $config = $config ?  : ($this->driverConfig ?  : YCore::appconfig('upload'));
+        $driver = $driver ?  : ($this->driver ?  : App::getConfig('upload.driver'));
+        $config = $config ?  : ($this->driverConfig ?  : App::getConfig('upload'));
         $class  = strpos($driver, '\\') ? $driver : 'finger\\Upload\\Driver\\' . ucfirst(strtolower($driver));
         $this->uploader = new $class($config);
         if (!$this->uploader) {

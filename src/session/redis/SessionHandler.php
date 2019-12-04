@@ -1,6 +1,6 @@
 <?php
 /**
- * 将SESSION封装到redis中保存。
+ * 将 SESSION 封装到 redis 中保存。
  * @author fingerQin
  * @date 2016-09-11
  */

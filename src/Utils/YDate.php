@@ -45,17 +45,6 @@ class YDate
     }
 
     /**
-     * 系统执行时间(微秒)。
-     *
-     * @return int
-     */
-    public static function getCostTime()
-    {
-        $microtime = microtime(TRUE);
-        return $microtime - MICROTIME;
-    }
-
-    /**
      * 多久之前
      *
      * @param  string  $datetime  时间：2017-03-22 08:08:08

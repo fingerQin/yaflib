@@ -8,7 +8,7 @@
 namespace finger\Utils;
 
 use finger\Registry;
-use finger\Exception\FingerException;
+use finger\Exception\SessionException;
 
 class YSession
 {
@@ -71,7 +71,7 @@ class YSession
     private static function isOpenSession()
     {
         if (!YCore::appconfig('session.status')) {
-            throw new FingerException('Please open the session switch : session.status');
+            throw new SessionException('Please open the session switch : session.status');
         }
     }
 }

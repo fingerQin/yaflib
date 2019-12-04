@@ -7,6 +7,7 @@
 
 namespace finger\Database;
 
+use finger\App;
 use finger\Registry;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
@@ -108,7 +109,11 @@ class Connection
         }
         $registryName = "mysql_{$this->dbOption}";
         // [1] 传统初始化MySQL方式。
-        $config   = YCore::appconfig("mysql.{$this->dbOption}");
+        $config = App::getDbConfig();
+        if (!isset($config[$dbOption])) {
+            throw new DbException("MySQL 配置：{$dbOption} 未设置");
+        }
+        $config   = $config[$dbOption];
         $host     = $config['host'];
         $port     = $config['port'];
         $username = $config['user'];
@@ -157,7 +162,7 @@ class Connection
         if (strlen($dbOption) > 0) {
             $dbOptions[] = $dbOption;
         } else {
-            $mysqlConfigs = YCore::appconfig('mysql');
+            $mysqlConfigs = App::getDbConfig();
             foreach($mysqlConfigs as $dbOption => $config) {
                 $dbOptions[] = $dbOption;
             }
@@ -199,7 +204,7 @@ class Connection
      * @param  string  $dbOption     数据库配置项。断线重连时，以哪个数据库配置重连。
      * 
      * @return void
-     * @throws \finger\Exception\ServiceException
+     * @throws \finger\Exception\DbException
      */
     final public function ping($isReconnect = true, $dbOption = '')
     {
@@ -349,8 +354,7 @@ class Connection
      */
     final public function writeSqlLog($sql, $params = [])
     {
-        $env = YCore::appconfig('app.env');
-        if ($env != ENV_PRO) {
+        if (App::isDebug()) {
             foreach ($params as $key => $val) {
                 $val = "'" . addslashes($val) . "'";
                 $sql = str_replace("{$key},", "{$val},", $sql);

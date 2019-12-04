@@ -7,6 +7,9 @@
 
 namespace finger\Utils;
 
+use finger\App;
+use finger\Exception\FingerException;
+
 class YUrl
 {
     /**
@@ -113,7 +116,7 @@ class YUrl
             $query .= "{$controllerName}/";
         }
         if (strlen($actionName) === 0) {
-            YCore::exception(STATUS_ERROR, 'actionName error');
+            throw new FingerException('actionName error');
         }
         $query .= $actionName;
         if ($params) {
@@ -176,9 +179,9 @@ class YUrl
      */
     public static function getFilesDomainName()
     {
-        $uploadDriver = \finger\Utils\YCore::appconfig('upload.driver');
+        $uploadDriver = App::getConfig('upload.driver');
         if (\strtolower($uploadDriver) == 'oss') {
-            $ossEndPoint = \finger\Utils\YCore::appconfig('upload.oss.endpoint');
+            $ossEndPoint = App::getConfig('upload.oss.endpoint');
             return 'http://' . $ossEndPoint;
         } else {
             return self::getDomainName();
