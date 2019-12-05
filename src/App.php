@@ -146,7 +146,7 @@ class App
     /**
      * 返回数据库配置。
      *
-     * @return void
+     * @return array
      */
     public static function getDbConfig()
     {
@@ -176,7 +176,7 @@ class App
      */
     public static function getRootPath()
     {
-        return ltrim(self::$rootPath, "/\\");
+        return rtrim(self::$rootPath, "/\\");
     }
 
     /**
