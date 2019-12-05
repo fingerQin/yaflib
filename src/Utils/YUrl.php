@@ -174,17 +174,17 @@ class YUrl
 
     /**
      * 获取文件服务器域名。
+     * 
+     * @param bool $isCurrentDomain 是否当前域名。
      *
      * @return string
      */
-    public static function getFilesDomainName()
+    public static function getFilesDomainName($isCurrentDomain = false)
     {
-        $uploadDriver = App::getConfig('upload.driver');
-        if (\strtolower($uploadDriver) == 'oss') {
-            $ossEndPoint = App::getConfig('upload.oss.endpoint');
-            return 'http://' . $ossEndPoint;
-        } else {
+        if ($isCurrentDomain) {
             return self::getDomainName();
+        } else {
+            return App::getConfig('upload.url');
         }
     }
 
