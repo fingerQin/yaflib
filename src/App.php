@@ -213,7 +213,7 @@ class App
         $cfgNameArr = explode('.', $name);
         $cfgLength  = count($cfgNameArr);
         if ($cfgLength == 1) {
-            return self::$appConfig[$name];
+            return self::$appConfig[$name] ?? $defaultValue;
         } else {
             $cfgValue = null; // 临时存储每一级的配置。
             for ($i = 0; $i < $cfgLength; $i++) {
