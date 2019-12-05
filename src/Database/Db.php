@@ -228,7 +228,7 @@ class Db
         $sth = $PDO->prepare($sql);
         $sth->execute($params);
         $data = $sth->fetch(\PDO::FETCH_ASSOC);
-        return $data ? intval($data['count']) : 0;
+        return $data['count'] ?? 0;
     }
 
     /**

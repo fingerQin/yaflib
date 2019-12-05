@@ -18,13 +18,13 @@ $config = [
         'root_path' => __DIR__
     ],
     'upload' => [
-        'driver'   => 'oss',                                                    // 上传驱动设定：oss - 阿里云 OSS、local - 本地上传
-        'save_dir' => '',                                                       // 保存路径。local 本地上传才设置。
+        'driver'   => 'oss',            // 上传驱动设定：oss - 阿里云 OSS、local - 本地上传
+        'save_dir' => '',               // 保存路径。local 本地上传才设置。
         'oss'      => [
-            'access_key'    => 'LTAILKtfAG8yBPxg',                              // OSS KEY。
-            'access_secret' => 'cMHSHejszdXiwxB5peVNZoK471n47c',                // OSS 密钥。
-            'endpoint'      => 'yaf-server-admin.oss-cn-shenzhen.aliyuncs.com', // OSS endpoint
-            'bucket'        => 'yaf-server-admin'                               // OSS bucket
+            'access_key'    => '',      // OSS KEY。
+            'access_secret' => '',      // OSS 密钥。
+            'endpoint'      => '',      // OSS endpoint
+            'bucket'        => ''       // OSS bucket
         ]
     ],
     'mysql' => [
