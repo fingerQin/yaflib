@@ -9,8 +9,6 @@ namespace finger\Database;
 
 use finger\App;
 use finger\Registry;
-use finger\Utils\YCore;
-use finger\Utils\YLog;
 use finger\Exception\DbException;
 
 class Connection
@@ -227,7 +225,7 @@ class Connection
         } catch (\PDOException $e) {
             $mysqlGoneAwayErrMsg = 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away';
             if ($isReconnect && !self::$transactionStatus && stripos($e->getMessage(), $mysqlGoneAwayErrMsg) !== FALSE) {
-                YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
+                App::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
                 $this->reconnect($dbOption);
                 return true;
             } else {
@@ -261,7 +259,7 @@ class Connection
                 } catch (\PDOException $e) {
                     $mysqlGoneAwayErrMsg = 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away';
                     if ($isReconnect && !self::$transactionStatus && stripos($e->getMessage(), $mysqlGoneAwayErrMsg) !== FALSE) {
-                        YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
+                        App::log("reconnect:{$dbOption}", 'mysql', 'ping');
                         (new self)->reconnect($dbOption);
                     } else {
                         throw new DbException('The database server is disconnected!');
@@ -391,8 +389,8 @@ class Connection
      */
     public function __destruct()
     {
-        if (YCore::appconfig('app.debug')) {
-            YLog::log($this->runSqlRecords, 'sql', 'log');
+        if (App::isDebug()) {
+            App::log($this->runSqlRecords, 'mysql', 'log');
         }
     }
 }

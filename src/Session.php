@@ -11,9 +11,17 @@
 namespace finger;
 
 use finger\Exception\SessionException;
+use finger\session\redis\SessionHandler;
 
 class Session
 {
+    /**
+     * 是否已启用 Session。
+     *
+     * @var boolean
+     */
+    private static $status = false;
+
     /**
      * 设置。
      *
@@ -74,6 +82,11 @@ class Session
     {
         if (!App::getConfig('session.status')) {
             throw new SessionException('Please open the session switch : session.status');
+        } elseif (self::$status === false) {
+            self::$status = true;
+            $redis = Cache::getRedisClient();
+            $sess  = new SessionHandler($redis, null, 'sess_');
+            session_set_save_handler($sess);
         }
     }
 }

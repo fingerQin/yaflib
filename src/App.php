@@ -236,7 +236,7 @@ class App
             }
         }
     }
-
+    
     /**
      * 写日志。
      *
@@ -247,40 +247,9 @@ class App
      *
      * @return void
      */
-    public static function log($logContent, $logDir = '', $logFilename = '', $isForceWrite = false) 
+    public static function log($logContent, $logDir = '', $logFilename = '', $isForceWrite = false)
     {
-        $time    = time();
-        $logTime = date('Y-m-d H:i:s', $time);
-        if (!is_array($logContent)) {
-            $serverIP   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-            $clientIP   = Ip::ip();
-            $logContent = [
-                'ErrorTime' => $logTime,
-                'ServerIP'  => $serverIP,
-                'ClientIP'  => $clientIP,
-                'content'   => $logContent
-            ];
-        } else {
-            $logContent = array_merge(['ErrorTime' => $logTime], $logContent);
-        }
-        $logfile = date('Ymd', $time);
-        if (strlen($logDir) > 0 && strlen($logFilename) > 0) {
-            $logDir   = trim($logDir, '/');
-            $logPath  = App::getRootPath() . '/logs/' . $logDir;
-            Dir::create($logPath);
-            $logPath .= "/{$logFilename}-{$logfile}.log";
-        } else {
-            $logPath  = App::getRootPath() . '/logs/errors/';
-            Dir::create($logPath);
-            $logPath  = $logPath . $logfile . '.log';
-        }
-        if (self::getConfig('log.type') == Log::LOG_WRITE_TYPE_JSON) {
-            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . "\n\n";
-        } else {
-            $logCtx = print_r($logContent, true) . "\n\n";
-        }
-        $logObj = Log::getInstance();
-        $logObj->write($logCtx, $logPath, $isForceWrite);
+        Log::save($logContent, $logDir, $logFilename, $isForceWrite);
     }
 
     /**

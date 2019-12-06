@@ -10,8 +10,8 @@
 
 namespace finger\Exception;
 
-use finger\Utils\YCore;
-use finger\Utils\YUrl;
+use finger\Ip;
+use finger\Url;
 
 class ServiceException extends FingerException
 {
@@ -27,7 +27,7 @@ class ServiceException extends FingerException
      * @param  Exception|null $previous
      * @return void
      */
-    public function __construct($message, $code = 0, $classNameAndMethod = '', $args = [], Exception $previous = null)
+    public function __construct($message, $code = 0, $classNameAndMethod = '', $args = [], \Throwable $previous = null)
     {
         $code = intval($code);
         parent::__construct($message, $code, $previous);
@@ -42,8 +42,8 @@ class ServiceException extends FingerException
     public function __toString()
     {
         $serverIP   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-        $clientIP   = YCore::ip();
-        $requestUrl = YUrl::getUrl();
+        $clientIP   = Ip::ip();
+        $requestUrl = Url::getUrl();
         $datetime   = date('Y-m-d H:i:s', time());
         $errLog     = "ErrorTime:{$datetime} \n";
         $errLog    .= "ErrorMsg: {$this->message} \n";
