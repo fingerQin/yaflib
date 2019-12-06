@@ -1,16 +1,15 @@
 <?php
 /**
- * 数据取值操作封装。
+ * 数据读取封装。
  * @author fingerQin
- * @date 2018-06-29
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-use finger\Validator;
 use finger\Exception\FingerException;
 
-class YInput
+class DataInput
 {
     /**
      * 从数组中读取一个数组。

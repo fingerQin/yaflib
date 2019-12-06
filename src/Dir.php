@@ -1,13 +1,13 @@
 <?php
 /**
- * 目录或文件操作操作。
+ * 目录操作。
  * @author fingerQin
- * @date 2016-05-24
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-class YDir
+class Dir
 {
     /**
      * 转换目录下面的所有文件编码格式

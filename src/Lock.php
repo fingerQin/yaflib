@@ -7,7 +7,6 @@
 
 namespace finger;
 
-use finger\Utils\YCache;
 use finger\Exception\LockException;
 
 class Lock
@@ -19,7 +18,7 @@ class Lock
      */
     public static function getRedis()
     {
-        return YCache::getRedisClient();
+        return Cache::getRedisClient();
     }
 
     /**

@@ -1,14 +1,13 @@
 <?php
 /**
- * 日期时间相关操作(时差/生肖/星座)。
- * 
+ * 与日期时间相关的封装。
  * @author fingerQin
- * @date 2018-06-28
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-class YDate
+class Date
 {
     /**
      * 时间戳格式化。

@@ -1,18 +1,18 @@
 <?php
 /**
- * Office 之 Excel 操作。
- * @author fingerQin
- * @date 2018-06-27
+ * Excel 导入导出。
+ * @author finger
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-class YExcel
+class Excel
 {
     /**
      * 26个大写字母。

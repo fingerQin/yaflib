@@ -1,16 +1,15 @@
 <?php
 /**
- * URL相关封装。
+ * URL 相关操作封装。
  * @author fingerQin
- * @date 2018-06-27
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-use finger\App;
 use finger\Exception\FingerException;
 
-class YUrl
+class Url
 {
     /**
      * 获取当前去除分页符的URL。
@@ -29,10 +28,10 @@ class YUrl
                 $sysProtocal = 'https://';
             }
         }
-        $phpSelf   = $_SERVER['PHP_SELF'] ? YString::safe_replace($_SERVER['PHP_SELF']) : YString::safe_replace($_SERVER['SCRIPT_NAME']);
-        $pathinfo  = isset($_SERVER['PATH_INFO']) ? YString::safe_replace($_SERVER['PATH_INFO']) : '';
-        $relateUrl = isset($_SERVER['REQUEST_URI']) ? YString::safe_replace($_SERVER['REQUEST_URI']) : $phpSelf . (isset($_SERVER['QUERY_STRING']) ? '?' . YString::safe_replace($_SERVER['QUERY_STRING']) : $pathinfo);
-        $pager     = YCore::appconfig('pager');
+        $phpSelf   = $_SERVER['PHP_SELF'] ? Strings::safe_replace($_SERVER['PHP_SELF']) : Strings::safe_replace($_SERVER['SCRIPT_NAME']);
+        $pathinfo  = isset($_SERVER['PATH_INFO']) ? Strings::safe_replace($_SERVER['PATH_INFO']) : '';
+        $relateUrl = isset($_SERVER['REQUEST_URI']) ? Strings::safe_replace($_SERVER['REQUEST_URI']) : $phpSelf . (isset($_SERVER['QUERY_STRING']) ? '?' . Strings::safe_replace($_SERVER['QUERY_STRING']) : $pathinfo);
+        $pager     = App::getConfig('pager', 'page');
         $filterGet = [];
         foreach ($_GET as $k => $v) {
             if ($k != $pager) {
@@ -53,20 +52,6 @@ class YUrl
             $filterUrl = $urlData[0];
         }
         return $filterUrl;
-    }
-
-    /**
-     * 创建一个触屏版的 URL。
-     *
-     * @param  string  $controllerName  控制器名称。
-     * @param  string  $actionName      操作名称。
-     * @param  array   $params          参数。
-     * @return string
-     */
-    public static function h5Url($controllerName, $actionName, array $params = [])
-    {
-        $domainName = YCore::appconfig('domain.h5');
-        return self::createPageUrl($domainName, 'Index', $controllerName, $actionName, $params);
     }
 
     /**
@@ -151,9 +136,9 @@ class YUrl
     public static function getUrl()
     {
         $sysProtocal = isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://';
-        $phpSelf     = $_SERVER['PHP_SELF'] ? YString::safe_replace($_SERVER['PHP_SELF']) : YString::safe_replace($_SERVER['SCRIPT_NAME']);
-        $pathinfo    = isset($_SERVER['PATH_INFO']) ? YString::safe_replace($_SERVER['PATH_INFO']) : '';
-        $relateUrl   = isset($_SERVER['REQUEST_URI']) ? YString::safe_replace($_SERVER['REQUEST_URI']) : $phpSelf . (isset($_SERVER['QUERY_STRING']) ? '?' . YString::safe_replace($_SERVER['QUERY_STRING']) : $pathinfo);
+        $phpSelf     = $_SERVER['PHP_SELF'] ? Strings::safe_replace($_SERVER['PHP_SELF']) : Strings::safe_replace($_SERVER['SCRIPT_NAME']);
+        $pathinfo    = isset($_SERVER['PATH_INFO']) ? Strings::safe_replace($_SERVER['PATH_INFO']) : '';
+        $relateUrl   = isset($_SERVER['REQUEST_URI']) ? Strings::safe_replace($_SERVER['REQUEST_URI']) : $phpSelf . (isset($_SERVER['QUERY_STRING']) ? '?' . Strings::safe_replace($_SERVER['QUERY_STRING']) : $pathinfo);
         return $sysProtocal . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') . $relateUrl;
     }
 

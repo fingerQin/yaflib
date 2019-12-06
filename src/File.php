@@ -1,13 +1,13 @@
 <?php
 /**
- * 文件相关操作封装。
+ * File 操作封装。
  * @author fingerQin
- * @date 2018-06-29
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-class YFile
+class File
 {
     /**
      * 取得文件扩展

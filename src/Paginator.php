@@ -6,9 +6,6 @@
 
 namespace finger;
 
-use finger\Utils\YCore;
-use finger\Utils\YUrl;
-
 class Paginator
 {
     public  $firstRow;           // 起始行数
@@ -91,7 +88,7 @@ class Paginator
         }
         /* 生成URL */
         $this->parameter[$this->p] = '[PAGE]';
-        $this->url = YUrl::getCurrentTrimPageUrl($this->parameter);
+        $this->url = Url::getCurrentTrimPageUrl($this->parameter);
         /* 计算分页信息 */
         $this->totalPages = ceil($this->totalRows / $this->listRows); // 总页数
         if (!empty($this->totalPages) && $this->nowPage > $this->totalPages) {

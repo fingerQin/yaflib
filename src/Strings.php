@@ -1,14 +1,13 @@
 <?php
 /**
- * 字符串操作(安全过滤)。
- * 
+ * 字符串高级操作封装。
  * @author fingerQin
- * @date 2018-06-28
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-class YString
+class Strings
 {
     /**
      * 字符串星号处理器。

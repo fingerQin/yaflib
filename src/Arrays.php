@@ -1,13 +1,13 @@
 <?php
 /**
- * 数据操作封装。
+ * 数组高级操作封装。
  * @author fingerQin
- * @date 2018-06-28
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-class YArray
+class Arrays
 {
     /**
      * 数组转换为树。

@@ -9,10 +9,14 @@
 
 namespace finger;
 
-use finger\Utils\YDir;
-
 class Log
 {
+    /**
+     * 日志记录类型。
+     */
+    const LOG_WRITE_TYPE_RAW  = 'raw';  // 原生：即以语言相关的数组打印形式写入日志。
+    const LOG_WRITE_TYPE_JSON = 'json'; // JSON。
+
     /**
      * 当前对象实例。
      *
@@ -52,6 +56,36 @@ class Log
     }
 
     /**
+     * 记录 API 接口请求日志。
+     * 
+     * @param  array  $params  请求参数。
+     * @return void
+     */
+    public static function writeApiRequestLog($params)
+    {
+        ksort($params);
+        $GLOBALS['Server-api'] = $params;
+    }
+
+    /**
+     * 记录 API 接口响应的数据日志。
+     * 
+     * @param  string  $result  响应 JOSN 数据。
+     * @return void
+     */
+    public static function writeApiResponseLog($result)
+    {
+        $requestLog = isset($GLOBALS['Server-api']) ? $GLOBALS['Server-api'] : [];
+        $requestLog['_response_date'] = date('Y-m-d H:i:s', time());
+        $log = [
+            'request'  => $requestLog,
+            'response' => $result
+        ];
+        unset($GLOBALS['Server-api']);
+        App::log($log, 'apis', 'log');
+    }
+
+    /**
      * 写日志(只是暂存,不会直接写入)。
      *
      * @param  string  $log           日志内容。
@@ -88,7 +122,7 @@ class Log
             if (isset($openedFileHandle[$key])) { // 已打开了文件，则直接写入。
                 fwrite($openedFileHandle[$key], $logObj['logPath']);
             } else {
-                YDir::create(dirname($logObj['logPath']));
+                Dir::create(dirname($logObj['logPath']));
                 $handle = fopen($logObj['logPath'], 'a');
                 $openedFileHandle[$key] = $handle;
                 fwrite($handle, $logObj['log']);

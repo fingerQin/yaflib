@@ -26,7 +26,7 @@
  */
 namespace finger;
 
-use finger\Utils\YCore;
+use finger\Exception\FingerException;
 
 class MobileDetect
 {
@@ -1057,7 +1057,7 @@ class MobileDetect
     public function __call($name, $arguments) {
         // make sure the name starts with 'is', otherwise
         if (substr($name, 0, 2) !== 'is') {
-            YCore::exception(STATUS_ERROR, "No such method exists: $name");
+            throw new FingerException("No such method exists: $name");
         }
 
         $this->setDetectionType(self::DETECTION_TYPE_MOBILE);

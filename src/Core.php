@@ -1,17 +1,15 @@
 <?php
 /**
- * 公用类库。
+ * 核心的公共工具方法。
  * @author fingerQin
- * @date 2018-06-27
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
-use finger\App;
-use finger\Ip;
 use finger\Utils\YLog;
 
-class YCore
+class Core
 {
     /**
      * 忽略不处理的错误。
@@ -90,57 +88,7 @@ class YCore
      */
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
-        if ($errno == E_WARNING && self::isIgnoreError($errstr)) {
-            return;
-        }
-        // [1] 获取堆栈信息。
-        $debugStack = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4);
-        $traceStack = '';
-        foreach ($debugStack as $debug) {
-            if (isset($debug['file'])) {
-                $traceStack .= "#{$debug['file']} line {$debug['line']}\n";
-            }
-        }
-        // [2] 根据环境控制错误信息输出。
-        $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-        $clientIP = YCore::ip();
-        $appDebug = self::appconfig('app.debug');
-        $isCli    = self::isCli();
-
-        $logData = [
-            'Type'       => 'set_error_handler',
-            'ErrorTime'  => date('Y-m-d H:i:s'),
-            'ServerIP'   => $serverIP,
-            'ClientIP'   => $clientIP,
-            'ErrorFile'  => $errfile,
-            'ErrorLine'  => $errline,
-            'ErrorMsg'   => $errstr,
-            'ErrorNo'    => $errno, 
-            'stackTrace' => $traceStack
-        ];
-        YLog::log($logData, 'errors', 'log', $isForceWrite = true);
-        if (defined('IS_API')) {
-            ob_clean();
-            header("Access-Control-Allow-Origin: *");
-            header('Content-type: application/json');
-            $data = [
-                'code' => 500,
-                'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
-            ];
-            YLog::writeApiResponseLog($data);
-            echo json_encode($data, JSON_UNESCAPED_UNICODE);
-        } else if ($isCli) {
-            $datetime = date('Y-m-d H:i:s', time());
-            echo $datetime . "\n" . print_r($logData, true);
-        } else {
-            ob_clean();
-            if ($appDebug) {
-                echo print_r($logData, true);
-            } else {
-                header('HTTP/1.1 500 Internal Server Error');
-            }
-        }
-        exit(0);
+        throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
 
     /**
@@ -167,9 +115,9 @@ class YCore
             }
             // [2] 根据环境配置输出不同错误信息。
             $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-            $clientIP = YCore::ip();
-            $appDebug = self::appconfig('app.debug');
-            $isCli    = self::isCli();
+            $clientIP = Ip::ip();
+            $appDebug = App::isDebug();
+            $isCli    = App::isCli();
 
             $logData = [
                 'ErrorTime'  => date('Y-m-d H:i:s'),
@@ -239,53 +187,6 @@ class YCore
     }
 
     /**
-     * 读取配置文件。
-     * 
-     * @param  string  $key  配置名。
-     * @param  string  $val  当值不存在返回此值。
-     * @return mixed
-     */
-    public static function appconfig($key, $val = null)
-    {
-        return App::getConfig($key, $val);
-    }
-
-    /**
-     * 字符串加密、解密函数
-     *
-     * @param  string   $txt          字符串
-     * @param  string   $operation    ENCODE为加密，DECODE为解密，可选参数，默认为ENCODE，
-     * @param  string   $key          密钥：数字、字母、下划线
-     * @param  string   $expiry       过期时间
-     * @return string
-     */
-    public static function sys_auth($string, $operation = 'ENCODE', $key = '', $expiry = 0)
-    {
-        $key_length    = 4;
-        $key           = md5($key != '' ? $key : self::appconfig('app.key'));
-        $fixedkey      = md5($key);
-        $egiskeys      = md5(substr($fixedkey, 16, 16));
-        $runtokey      = $key_length ? ($operation == 'ENCODE' ? substr(md5(microtime(true)), - $key_length) : substr($string, 0, $key_length)) : '';
-        $keys          = md5(substr($runtokey, 0, 16) . substr($fixedkey, 0, 16) . substr($runtokey, 16) . substr($fixedkey, 16));
-        $string        = $operation == 'ENCODE' ? sprintf('%010d', $expiry ? $expiry + time() : 0) . substr(md5($string . $egiskeys), 0, 16) . $string : base64_decode(substr($string, $key_length));
-        $i             = 0;
-        $result        = '';
-        $string_length = strlen($string);
-        for ($i = 0; $i < $string_length; $i ++) {
-            $result .= chr(ord($string{$i}) ^ ord($keys{$i % 32}));
-        }
-        if ($operation == 'ENCODE') {
-            return $runtokey . str_replace('=', '', base64_encode($result));
-        } else {
-            if ((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() > 0) && substr($result, 10, 16) == substr(md5(substr($result, 26) . $egiskeys), 0, 16)) {
-                return substr($result, 26);
-            } else {
-                return '';
-            }
-        }
-    }
-
-    /**
      * 获取远程内容
      * 
      * -- 在使用类似方法或 CURL 的时候。如果确定不使用 IPV6 解析，请关闭它。
@@ -302,16 +203,6 @@ class YCore
             ]
         ]);
         return @file_get_contents($url, 0, $stream);
-    }
-
-    /**
-     * 获取请求ip
-     *
-     * @return string ip地址
-     */
-    public static function ip()
-    {
-        return Ip::ip();
     }
 
     /**
@@ -391,7 +282,7 @@ class YCore
      */
     public static function dataToNullObject($data = [])
     {
-        return !empty($data) ? $data : YCore::getNullObject();
+        return !empty($data) ? $data : self::getNullObject();
     }
 
     /**
@@ -402,15 +293,5 @@ class YCore
     public static function getNullObject()
     {
         return (object)[];
-    }
-
-    /**
-     * 判断是否为 CLI 模式运行。
-     *
-     * @return boolean
-     */
-    public static function isCli()
-    {
-        return preg_match("/cli/i", PHP_SAPI) ? TRUE : FALSE;
     }
 }

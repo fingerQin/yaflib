@@ -2,16 +2,16 @@
 /**
  * 缓存操作。
  * @author fingerQin
- * @date 2018-06-28
+ * @date 2019-12-06
  */
 
-namespace finger\Utils;
+namespace finger;
 
 use finger\Registry;
-use finger\cache\redis\Cache;
+use finger\cache\redis\Cache AS RedisCache;
 use finger\Exception\CacheException;
 
-class YCache
+class Cache
 {
     /**
      * 初始化缓存对象。
@@ -27,7 +27,7 @@ class YCache
         if ($ok) {
             return Registry::get($requestKey);
         } else {
-            $systemCache = new Cache($redisOption);
+            $systemCache = new RedisCache($redisOption);
             Registry::set($requestKey, $systemCache);
             return $systemCache;
         }
@@ -122,7 +122,7 @@ class YCache
         $redis = self::getRedisClient($redisOption);
         $pong  = $redis->ping();
         if ($pong != '+PONG') {
-            YLog::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
+            App::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
             throw new CacheException('Redis ping failure!');
         }
     }
