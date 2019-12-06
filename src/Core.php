@@ -7,8 +7,6 @@
 
 namespace finger;
 
-use finger\Utils\YLog;
-
 class Core
 {
     /**
@@ -69,7 +67,7 @@ class Core
     {
         if (strlen($classNameAndMethod) === 0) {
             // debug_backtrace() 返回整个堆栈调用信息。
-            // 堆栈里面的第二个数组返回的是调用 YCore::exception() 方法所在的类与方法相关信息。
+            // 堆栈里面的第二个数组返回的是调用 Core::exception() 方法所在的类与方法相关信息。
             $result             = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
             $classNameAndMethod = $result[1]['class'] . $result[1]['type'] . $result[1]['function'];
             $args               = $result[1]['args'];
@@ -131,7 +129,7 @@ class Core
                 'stackTrace' => $traceStack
             ];
 
-            YLog::log($logData, 'errors', 'log', $isForceWrite = true);
+            App::log($logData, 'errors', 'log', $isForceWrite = true);
             if (defined('IS_API')) {
                 ob_clean();
                 header("Access-Control-Allow-Origin: *");
@@ -140,7 +138,7 @@ class Core
                     'code' => 500,
                     'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
                 ];
-                YLog::writeApiResponseLog($data);
+                Log::writeApiResponseLog($data);
                 echo json_encode($data, JSON_UNESCAPED_UNICODE);
             } else if ($isCli) {
                 $datetime = date('Y-m-d H:i:s', time());
