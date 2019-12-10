@@ -97,19 +97,24 @@ class Log
      */
     public static function save($logContent, $logDir = '', $logFilename = '', $isForceWrite = false)
     {
-        $time    = time();
-        $logTime = date('Y-m-d H:i:s', $time);
+        $time     = time();
+        $logTime  = date('Y-m-d H:i:s', $time);
+        $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+        $clientIP = Ip::ip();
         if (!is_array($logContent)) {
-            $serverIP   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-            $clientIP   = Ip::ip();
             $logContent = [
-                'ErrorTime' => $logTime,
-                'ServerIP'  => $serverIP,
-                'ClientIP'  => $clientIP,
-                'content'   => $logContent
+                'LogTime'  => $logTime,
+                'ServerIP' => $serverIP,
+                'ClientIP' => $clientIP,
+                'content'  => $logContent
             ];
         } else {
-            $logContent = array_merge(['ErrorTime' => $logTime], $logContent);
+            $log = [
+                'LogTime'  => $logTime,
+                'ServerIP' => $serverIP,
+                'ClientIP' => $clientIP
+            ];
+            $logContent = array_merge($log, $logContent);
         }
         $logfile = date('Ymd', $time);
         if (strlen($logDir) > 0 && strlen($logFilename) > 0) {

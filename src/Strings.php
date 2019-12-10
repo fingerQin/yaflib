@@ -11,7 +11,7 @@ class Strings
 {
     /**
      * 字符串星号处理器。
-     * 
+     *
      * @param  string  $str     被加星处理的字符串。
      * @param  int     $start   星号起始位置。
      * @param  int     $length  星号长度。
@@ -54,7 +54,7 @@ class Strings
      *
      * @param  int     $length  输出长度
      * @param  string  $chars   可选的，默认为 0123456789
-     * 
+     *
      * @return string 字符串
      */
     public static function random($length, $chars = '0123456789')
@@ -85,7 +85,7 @@ class Strings
             ' ', '&nbsp;', '&amp;', '&quot;', '&#039;',
             '&ldquo;', '&rdquo;', '&mdash;', '&lt;',
             '&gt;', '&middot;', '&hellip;'
-        ], 
+        ],
         [
             '∵', ' ', '&', '"', "'",
             '“', '”', '—', '<', '>', '·', '…'
@@ -130,7 +130,7 @@ class Strings
             $n -= $tn;
         }
         $strcut = substr($string, 0, $n);
-        $strcut = str_replace(['∵', '&', '"', "'", '“', '”', '—', '<', '>', '·', '…'], 
+        $strcut = str_replace(['∵', '&', '"', "'", '“', '”', '—', '<', '>', '·', '…'],
         [' ', '&amp;', '&quot;', '&#039;', '&ldquo;', '&rdquo;', '&mdash;', '&lt;', '&gt;', '&middot;', '&hellip;'], $strcut);
         return $strcut . $dot;
     }

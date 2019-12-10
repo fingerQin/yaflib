@@ -12,7 +12,7 @@
  namespace finger;
 
 class Cookie
- {
+{
      /**
      * Cookie 设置。
      *

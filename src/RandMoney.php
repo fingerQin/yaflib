@@ -42,7 +42,8 @@ class RandMoney
      * @param  float  $rewardMoney  随机总金额。
      * @param  int    $rewardNum    拆分数量。
      * @param  int    $scatter      分散度值。
-     * @return void
+     *
+     * @return array
      */
     public function splitReward($rewardMoney, $rewardNum, $scatter = 100)
     {
