@@ -2,7 +2,7 @@
 /**
  * 封装一个与 Yaf_Registry 类功能相似的功能。
  * 
- * @author 7031
+ * @author fingerQin
  * @date 2019-11-27
  */
 
