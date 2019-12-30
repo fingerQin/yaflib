@@ -429,7 +429,13 @@ class Validator
      */
     public static function is_date($value, $format = 'Y-m-d H:i:s')
     {
-        return date_create_from_format($format, $value) !== false;
+        $date = \DateTime::createFromFormat($format, $value);
+        if ($date !== false) {
+            $datetime = $date->format($format);
+            return ($datetime == $value) ? true : false;
+        } else {
+            return false;
+        }
     }
 
     /**
