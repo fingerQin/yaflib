@@ -165,7 +165,7 @@ class App
         if ($path) {
             self::$rootPath = $path;
         } else {
-            self::$rootPath = dirname(dirname(dirname(dirname(dirname(__DIR__)))));
+            self::$rootPath = dirname(dirname(dirname(dirname(__DIR__))));
         }
     }
 
