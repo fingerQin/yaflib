@@ -37,6 +37,9 @@ class Lock
         if (strlen($key) === 0) {
             throw new LockException('缓存KEY没有设置');
         }
+        if (!is_int($timeout) || $timeout < 0) {
+            throw new LockException("timeout 参数有误");
+        }
         $start = self::getMicroTime();
         $redis = self::getRedis();
         do {
@@ -49,7 +52,7 @@ class Lock
                 break;
             }
             usleep($sleep);
-        } while (!is_numeric($timeout) || (self::getMicroTime()) < ($start + ($timeout * 1000000)));
+        } while ((self::getMicroTime()) < ($start + ($timeout * 1000000)));
         return $acquired ? true : false;
     }
 
