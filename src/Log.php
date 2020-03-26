@@ -103,16 +103,16 @@ class Log
         $clientIP = Ip::ip();
         if (!is_array($logContent)) {
             $logContent = [
-                'LogTime'  => $logTime,
-                'ServerIP' => $serverIP,
-                'ClientIP' => $clientIP,
-                'content'  => $logContent
+                'logtime'   => $logTime,
+                'server_ip' => $serverIP,
+                'client_ip' => $clientIP,
+                'content'   => $logContent
             ];
         } else {
             $log = [
-                'LogTime'  => $logTime,
-                'ServerIP' => $serverIP,
-                'ClientIP' => $clientIP
+                'logtime'   => $logTime,
+                'server_ip' => $serverIP,
+                'client_ip' => $clientIP
             ];
             $logContent = array_merge($log, $logContent);
         }
