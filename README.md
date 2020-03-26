@@ -19,7 +19,7 @@ yaflib 是作者使用 Yaf 框架过程中完成金融项目不断实现并优�
 ---
 
 ```
-$ composer require "finger/yaflib:^1"
+$ composer require "finger/yaflib:^2"
 ```
 
 ### 使用
