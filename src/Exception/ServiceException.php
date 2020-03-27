@@ -56,7 +56,7 @@ class ServiceException extends FingerException
             'client_ip'   => $clientIP,
             'req_url'     => $requestUrl,
             'method'      => $this->classNameAndMethod,
-            'params'      => json_decode($this->methodArgs),
+            'params'      => json_encode($this->methodArgs),
             'stack_trace' => $this->getTraceAsString()
         ];
         return $errors;
