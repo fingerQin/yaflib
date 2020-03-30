@@ -167,7 +167,7 @@ class App
         } elseif (defined('APP_PATH')) {
             self::$rootPath = APP_PATH;
         } else {
-            self::$rootPath = dirname(dirname(dirname(__DIR__)));
+            self::$rootPath = dirname(dirname(dirname(dirname(__DIR__))));
         }
     }
 
