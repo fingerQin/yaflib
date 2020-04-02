@@ -6,7 +6,7 @@
  * @date 2016-09-11
  */
 
-namespace finger\cache\redis;
+namespace finger\Cache\Redis;
 
 use finger\App;
 use finger\Registry;
@@ -17,7 +17,7 @@ class Cache
 {
     /**
      * 当前对象。
-     * @var finger\cache\redis
+     * @var finger\Cache\Redis
      */
     protected $client = null;
 
@@ -31,7 +31,7 @@ class Cache
     /**
      * 构造方法。
      *
-     * @param string $redisOption Reids 配置项名称。
+     * @param  string  $redisOption  Reids 配置项名称。
      *
      * @return void
      */
@@ -58,7 +58,7 @@ class Cache
     /**
      * 获取 Redis 客户端连接。
      *
-     * @return finger\cache\redis
+     * @return finger\Cache\Redis
      */
     public function getClient()
     {
@@ -68,7 +68,7 @@ class Cache
     /**
      * 连接 redis
      * 
-     * @param string $redisOption Reids 配置项名称。
+     * @param  string  $redisOption  Reids 配置项名称。
      * 
      * @return \Redis
      */

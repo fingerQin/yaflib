@@ -7,7 +7,7 @@
  * @date 2016-09-11
  */
 
-namespace finger\cache\mysql;
+namespace finger\Cache\Mysql;
 
 use finger\Registry;
 use finger\Database\Connection;
@@ -17,7 +17,7 @@ class Cache
 {
     /**
      * 当前对象。
-     * @var finger\cache\mysql
+     * @var finger\Cache\Mysql
      */
     protected $client = null;
 
@@ -94,7 +94,7 @@ class Cache
 
     /**
      * 删除缓存。
-     * @param  string  $cache_key
+     * @param  string  $cacheKey
      * @return bool
      */
     public function delete($cacheKey)

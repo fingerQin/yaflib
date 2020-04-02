@@ -16,7 +16,6 @@ class Validator
      * @var array
      */
     public static $ruleTxt = [
-        'qq'             => '%label%格式不正确',
         'mobilephone'    => '%label%格式不正确',
         'telephone'      => '%label%格式不正确',
         'zipcode'        => '%label%格式不正确',
@@ -103,7 +102,6 @@ class Validator
                     case 'url' :
                     case 'email' :
                     case 'utf8' :
-                    case 'datetime' :
                     case 'alpha' :
                     case 'alpha_dash' :
                     case 'alpha_number' :
@@ -179,10 +177,11 @@ class Validator
                         if (strlen($valiValue) === 0) {
                             continue;
                         }
-                        if (!isset($arrRuleItem[1])) {
-                            throw new ValidatorException('Date validator first parameter must be set');
+                        if (isset($arrRuleItem[1])) {
+                            $format = ($arrRuleItem[1] == 1) ? 'Y-m-d H:i:s' : 'Y-m-d';
+                        } else {
+                            $format = 'Y-m-d H:i:s';
                         }
-                        $format = $arrRuleItem[1] == 1 ? 'Y-m-d H:i:s' : 'Y-m-d';
                         if (!self::is_date($valiValue, $format)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             throw new ValidatorException($errmsg);
@@ -206,17 +205,6 @@ class Validator
     public static function is_number($number)
     {
         return preg_match('/^\d+$/', $number) ? true : false;
-    }
-
-    /**
-     * 判断是否为QQ号码。
-     *
-     * @param  string  $qq
-     * @return bool
-     */
-    public static function is_qq($qq)
-    {
-        return preg_match('/^[1-9]\d{4,12}$/', $qq) ? true : false;
     }
 
     /**
@@ -439,17 +427,6 @@ class Validator
     }
 
     /**
-     * 验证日期时间是否为全格式(Y-m-d H:i:s)。 
-     *
-     * @param  string  $value  日期。
-     * @return bool
-     */
-    public static function is_datetime($value)
-    {
-        return self::is_date($value, 'Y-m-d H:i:s');
-    }
-
-    /**
      * 判断是否为整数。
      *
      * @param  string  $str
@@ -528,14 +505,24 @@ class Validator
     }
 
     /**
-     * 是否必需。
+     * 是否必需(只允许字符串、数组、数字)。
      *
+     * -- 如果是字符串、数组、数字等其他类型也代表没有值。因为验证器用于提交的数据验证。
+     * 
      * @param  string  $str
      * @return bool
      */
     public static function is_require($str)
     {
-        return strlen($str) ? true : false;
+        if (isset($str)) {
+            if (is_array($str) || is_string($str) || self::is_number($str)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -5,7 +5,7 @@
  * @date 2016-09-11
  */
 
-namespace finger\session\redis;
+namespace finger\Session\Redis;
 
 class SessionHandler implements \SessionHandlerInterface
 {

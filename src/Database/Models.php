@@ -511,7 +511,7 @@ class Models
      * -- Example start --
      * # 示例1：
      * $where = [
-     *      'username'    => 'winerQin',
+     *      'username'    => 'fingerQin',
      *      'mobilephone' => '13xxxxxxxxx',
      * ];
      * # 转换后:
@@ -523,7 +523,7 @@ class Models
      *      'sex'   => ['!=', 1],
      *      'sex'   => ['<>', 1],
      *      'money' => ['<', '100'],
-     *      'user'  => ['LIKE', '%winer%'],
+     *      'user'  => ['LIKE', '%finger%'],
      * ];
      * # 转换后：
      * AND age > :age AND money < :money AND user LIKE :user
@@ -546,7 +546,7 @@ class Models
      * [
      *      'where'  => 'username = :username AND mobilephone = :mobilephone',
      *      'params' => [
-     *          ':username'    => 'winerQin', 
+     *          ':username'    => 'fingerQin', 
      *          ':mobilephone' => '13xxxxxxxxx'
      *      ],
      * ];

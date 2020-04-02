@@ -8,7 +8,7 @@
 namespace finger;
 
 use finger\Registry;
-use finger\cache\redis\Cache AS RedisCache;
+use finger\Cache\Redis\Cache AS RedisCache;
 use finger\Exception\CacheException;
 
 class Cache
@@ -18,7 +18,7 @@ class Cache
      * 
      * @param string $redisOption Redis 配置项。
      *
-     * @return \finger\cache\redis\Cache
+     * @return \finger\Cache\Redis\Cache
      */
     private static function getInstace($redisOption = 'default')
     {

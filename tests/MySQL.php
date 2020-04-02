@@ -65,7 +65,7 @@ echo $count;
 echo "\n";
 
 // [4] 添加数据。
-$sql = 'INSERT INTO tb_user (userid,mobile,salt,pwd) VALUES(:userid,:mobile,:salt,:pwd)';
+$sql = 'INSERT INTO tb_user (mobile,salt,pwd) VALUES(:mobile,:salt,:pwd)';
 $params = [
     ':mobile' => time(),
     ':salt'   => 'xxxxxx',

@@ -11,7 +11,7 @@
 namespace finger;
 
 use finger\Exception\SessionException;
-use finger\session\redis\SessionHandler;
+use finger\Session\Redis\SessionHandler;
 
 class Session
 {

@@ -1,0 +1,12 @@
+Array
+(
+    [logtime] => 2020-04-02 09:37:04
+    [server_ip] => 127.0.0.1
+    [client_ip] => 127.0.0.1
+    [0] => SELECT * FROM tb_user
+    [1] => SELECT * FROM tb_user
+    [2] => SELECT * FROM tb_user
+    [3] => INSERT INTO tb_user (mobile,salt,pwd) VALUES('1585791424','xxxxxx','2fc0c367d04a7ee6094f7a73dee8be43')
+)
+
+

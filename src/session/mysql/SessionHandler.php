@@ -13,7 +13,7 @@
  * @date 2016-09-11
  */
 
-namespace finger\session\mysql;
+namespace finger\Session\Mysql;
 
 use finger\Exception\SessionException;
 
