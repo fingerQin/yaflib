@@ -607,7 +607,7 @@ class Models
                             throw new DbException("The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
-                            continue;
+                            break;
                         }
                         $_where = '';
                         foreach ($item[1] as $k => $v) {
