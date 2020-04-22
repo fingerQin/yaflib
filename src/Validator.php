@@ -113,7 +113,7 @@ class Validator
                     case 'number' :
                     case 'bankcard' :
                         if ($ruleName != 'require' && strlen($valiValue) === 0 && !is_bool($valiValue)) {
-                            continue;
+                            break;
                         }
                         $classFuncName = "is_{$ruleName}"; // 当前调用的验证器名称。
                         if (!self::{$classFuncName}($valiValue)) {
@@ -123,7 +123,7 @@ class Validator
                         break;
                     case 'alpha_between' :
                         if (strlen($valiValue) === 0) {
-                            continue;
+                            break;
                         }
                         if (!isset($arrRuleItem[1])) {
                             throw new ValidatorException('Alpha_between validator must set the starting value');
@@ -138,7 +138,7 @@ class Validator
                         break;
                     case 'number_between' :
                         if (strlen($valiValue) === 0) {
-                            continue;
+                            break;
                         }
                         if (!isset($arrRuleItem[1])) {
                             throw new ValidatorException('Number_between validator must set the minimum value');
@@ -155,7 +155,7 @@ class Validator
                         break;
                     case 'len' :
                         if (strlen($valiValue) === 0) {
-                            continue;
+                            break;
                         }
                         if (!isset($arrRuleItem[1])) {
                             throw new ValidatorException('Len validator first parameter must be set');
@@ -175,7 +175,7 @@ class Validator
                         break;
                     case 'date' :
                         if (strlen($valiValue) === 0) {
-                            continue;
+                            break;
                         }
                         if (isset($arrRuleItem[1])) {
                             $format = ($arrRuleItem[1] == 1) ? 'Y-m-d H:i:s' : 'Y-m-d';
