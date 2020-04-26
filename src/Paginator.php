@@ -140,7 +140,7 @@ class Paginator
                 }
             } else {
                 if ($page > 0 && $this->totalPages != 1) {
-                    $linkPage .= '<li class="active"><a href="#"><span class="sr-only">' . $page . '</span></a></li>';
+                    $linkPage .= '<li class="active"><a href="#">' . $page . '<span class="sr-only">' . $page . '</span></a></li>';
                 }
             }
         }
