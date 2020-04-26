@@ -103,7 +103,7 @@ class Paginator
         // 上一页
         $upRow  = $this->nowPage - 1;
         $upPage = '<li class="disabled"><a aria-label="Previous" href="#"><span aria-hidden="true">' . $this->config['prev'] . '</span></a></li>';
-        if ($upPage > 0) {
+        if ($upRow > 0) {
             $upPage = '<li><a aria-label="Previous" href="' . $this->url($upRow) . '"><span aria-hidden="true">' . $this->config['prev'] . '</span></a></li>';
         }
         // 下一页
